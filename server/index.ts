@@ -1,4 +1,4 @@
-import TalkoServer from './talko/server/TalkoServer';
+import TalkoServer from "./talko/server/TalkoServer";
 
 const server = new TalkoServer(5050);
 
