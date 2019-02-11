@@ -4,10 +4,12 @@ import logo from "./images/logo.jpg";
 import sendButton from "./images/send-button.png";
 import {
   ChatWindow,
+  InputWindow,
   Input,
   SendButton,
   MinimizedChatWindow,
   Header,
+  HeaderTitle,
   Profile,
   ProfileImage,
   Name,
@@ -73,7 +75,8 @@ export default class Chat extends Component {
       background: "",
       color: "",
       input: "",
-      header: ""
+      header: "",
+      messageColor: ""
     };
 
     //Switch determines what values are held by the theme object based on the selected theme
@@ -83,12 +86,20 @@ export default class Chat extends Component {
         theme.color = "#0d0d0d";
         theme.input = "lightgray";
         theme.header = "#efefef";
+        theme.messageColor = "#575757";
+        theme.profileBoxShadow = "#eeecec";
         break;
       case "dark":
-        theme.background = "#0d0d0d";
-        theme.color = "#0d0d0d";
+        theme.background = "#1c1c1c";
+        theme.color = "white";
         theme.input = "lightgray";
         theme.header = "000";
+        theme.headerTitleColor = "#fff";
+        theme.messageColor = "#fff";
+        theme.profileBackground = "#1c1c1c";
+        theme.profileBoxShadow = "black";
+        theme.inputWindowBorderColor = "black";
+        theme.footerBackgroundColor = "#1c1c1c";
         break;
       default:
         console.log("default theme");
@@ -115,9 +126,8 @@ export default class Chat extends Component {
                 paddingLeft: "10px",
                 color: "#575757"
               }}
-            >
-              <h1>Live Chat</h1>
-            </div>
+            />
+            <HeaderTitle>{this.props.headerTitle}</HeaderTitle>
             <MaximizeButton onClick={this.toggleChatWindow}>
               &and;
             </MaximizeButton>
@@ -125,9 +135,7 @@ export default class Chat extends Component {
         ) : (
           <ChatWindow>
             <Header>
-              <div style={{ fontSize: "10px", paddingLeft: "10px" }}>
-                <h1>Live Chat</h1>
-              </div>
+              <HeaderTitle>{this.props.headerTitle}</HeaderTitle>
               <MinimizeButton onClick={this.toggleChatWindow}>
                 &or;
               </MinimizeButton>
@@ -143,23 +151,14 @@ export default class Chat extends Component {
             <MessageWindow>
               {dispMessages} <div ref={this.newMessage} />
             </MessageWindow>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                height: "50px",
-                borderTop: "solid 2px lightgray",
-                borderBottom: "solid 2px lightgray"
-              }}
-            >
+            <InputWindow>
               <Input
                 onChange={this.handleInput}
                 value={this.state.input}
                 placeholder="Type in your message here..."
               />
               <SendButton src={sendButton} onClick={this.sendMessage} />
-            </div>
+            </InputWindow>
             <Footer>
               <p
                 style={{

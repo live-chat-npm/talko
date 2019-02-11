@@ -13,16 +13,16 @@ const Maximize = keyframes`
 `;
 
 const Minimize = keyframes`
-      from {
-        height: 50vh
-        width: 368px;
-      } 
+  from {
+    height: 50vh
+    width: 368px;
+  } 
 
-      to {
-        height: 10vh
-        width: 300px;
-      }
-     `;
+  to {
+    height: 10vh
+    width: 300px;
+  }
+  `;
 
 const FadeIn = keyframes`
   from {
@@ -45,6 +45,16 @@ export const ChatWindow = styled.div`
   box-shadow: 0px 0px 10px 1px lightgray;
 `;
 
+//Component wraps the input field and the button
+export const InputWindow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 50px;
+  border-top: solid 2px ${props => props.theme.inputWindowBorderColor};
+  border-bottom: solid 2px ${props => props.theme.inputWindowBorderColor};
+`;
+
 //Input field for user input
 export const Input = styled.input`
   width: 350px;
@@ -58,21 +68,25 @@ export const Input = styled.input`
   &::-webkit-input-placeholder {
     padding-left: 2px;
     opacity: 0.3;
+    color: #575757;
   }
 
   &:-moz-placeholder {
     padding-left: 2px;
     opacity: 0.3;
+    color: #575757;
   }
 
   &::-moz-placeholder {
     padding-left: 2px;
     opacity: 0.3;
+    color: #575757;
   }
 
   &:-ms-input-placeholder {
     padding-left: 2px;
     opacity: 0.3;
+    color: #575757;
   }
 `;
 
@@ -103,13 +117,19 @@ export const Header = styled.div`
   align-items: center;
 `;
 
+export const HeaderTitle = styled.h1`
+  color: ${props => props.theme.headerTitleColor};
+  font-size: 14px;
+  padding-left: 10px;
+`;
+
 //Parent div for profile image, name, title, and logo
 export const Profile = styled.div`
   display: flex;
   height: 11vh;
   width: 100%;
-  background: #fff;
-  box-shadow: 0px 0px 10px 1px #eeecec;
+  background: ${props => props.theme.profileBackground};
+  box-shadow: 0px 0px 10px 1px ${props => props.theme.profileBoxShadow};
 `;
 
 export const ProfileImage = styled.img`
@@ -143,7 +163,7 @@ export const Logo = styled.img`
 
 export const MessageWindow = styled.div`
   height: 35vh;
-  overflow: scroll;
+  overflow: auto;
 `;
 
 export const MaximizeButton = styled.div`
@@ -167,13 +187,13 @@ export const MinimizeButton = styled.div`
 export const Footer = styled.div`
   width: 100%;
   font-size: 10px;
-  background-color: #efefef;
+  background-color: ${props => props.theme.footerBackgroundColor};
   height: 18px;
 `;
 
 export const Message = styled.div`
   font-size: 14px;
-  color: #575757;
+  color: ${props => props.theme.messageColor};
   padding-left: 10px;
   padding-top: 10px;
 `;
