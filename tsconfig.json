@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "module": "esnext",
     "outDir": "./build",
+    "rootDir": "./server",
     "strict": true,
     "esModuleInterop": true,
     "lib": [
