@@ -3,8 +3,11 @@
     "target": "es6",
     "module": "esnext",
     "outDir": "./build",
-    "rootDir": "./server",
     "strict": true,
+    "rootDirs": [
+      "./talko",
+      "./server/src"
+    ],
     "esModuleInterop": true,
     "lib": [
       "dom",
