@@ -1,5 +1,16 @@
 import TalkoServer from './talko/server/TalkoServer';
+import Session from './talko/server/Session';
 
-const server = new TalkoServer(5050);
+const sessionHandler: Session = {
+    handleConnection: socket => {
+        
+    },
 
-server.start();
+    handleDisconnection: () => {
+
+    }
+};
+
+const server = new TalkoServer(sessionHandler);
+
+server.start(5050);

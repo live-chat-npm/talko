@@ -2,35 +2,40 @@ import http from 'http';
 import socketIO from 'socket.io';
 import express from 'express';
 import { json } from 'body-parser';
+import Session from './Session';
 
 const app = express();
 const server = http.createServer();
 const io = socketIO(server);
 
-io.on('connection', (socket: any) => {
-    console.log("connected!");
-    // todo: emit a default greeting
-    socket.emit('greeting', { greeting: 'You are now connected!' });
-
-    // on disconnect
-    socket.on('disconnect', () => {
-        console.log("disconnected");
-    });
-});
-
 export default class TalkoServer {
 
-    port: number;
+    session: Session;
+    defaultGreeting: boolean;
 
-    constructor(port: number) {
-        this.port = port;
+    constructor (session: Session, defaultGreeting: boolean = true) {
+        this.session = session;
+        this.defaultGreeting = defaultGreeting;
     }
 
     /**
      * Starst the talko server to start listening for data
      */
-    start(): void {
-        server.listen(this.port, () => console.log(`Talko server listening on port ${this.port}`));
-    }
+    start(port: number): void {
+        server.listen(port, () => console.log(`Talko server listening on port ${port}`));
 
+        io.on('connection', (socket: any) => {
+            if (this.defaultGreeting) {
+                socket.emit("greeting", "You are now connected! Welcome to talko")
+            }
+
+            this.session.handleConnection(socket);
+
+            // on disconnect
+            socket.on('disconnect', () => {
+                console.log("disconnected");
+            });
+        });
+    }
+    
 }
