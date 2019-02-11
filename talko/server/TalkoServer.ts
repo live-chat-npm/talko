@@ -19,7 +19,7 @@ export default class TalkoServer {
     }
 
     /**
-     * Starst the talko server to start listening for data
+     * Starts the talko server to start listening for data
      */
     start(port: number): void {
         server.listen(port, () => console.log(`Talko server listening on port ${port}`));
