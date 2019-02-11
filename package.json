@@ -2,6 +2,7 @@
   "name": "talko",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost",
   "dependencies": {
     "@types/body-parser": "^1.17.0",
     "@types/express": "^4.16.1",
@@ -11,7 +12,6 @@
     "@types/socket.io": "^2.1.2",
     "body-parser": "^1.18.3",
     "dotenv": "^6.2.0",
-    "express": "^4.16.4",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "react-scripts": "2.1.3",
