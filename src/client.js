@@ -8,7 +8,7 @@ export default class Client {
   };
 
   init = upState => {
-    socket = io("http://localhost:3001");
+    socket = io("http://localhost:3000");
 
     socket.on("connect", () => {
       console.log("CONNECTED!");
