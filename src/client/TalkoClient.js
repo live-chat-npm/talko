@@ -39,6 +39,7 @@ export default class TalkoClient {
   };
 
   sendMessage = text => {
-    socket.emit("send_message", { text });
+    console.log({ text: text });
+    socket.emit("send_message", { text: text });
   };
 }

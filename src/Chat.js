@@ -31,13 +31,13 @@ export default class Chat extends Component {
       minimized: true //Default position for chat window
     };
 
-    this.TalkoClient = new TalkoClient();
+    this.talkoClient = new TalkoClient(this.session);
 
     this.updateState = this.updateState.bind(this);
   }
 
   componentDidMount() {
-    this.TalkoClient.start(5050, this.updateState, this.props.name);
+    this.talkoClient.start(5050, this.updateState);
   }
 
   updateState(m) {
@@ -74,7 +74,7 @@ export default class Chat extends Component {
 
   //Adds the message to the messages array in state
   sendMessage = () => {
-    this.TalkoClient.sendMessage(this.state.input);
+    this.talkoClient.sendMessage(this.state.input);
 
     this.setState({
       // messages: [...this.state.messages, this.state.input],
