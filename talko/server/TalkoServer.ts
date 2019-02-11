@@ -26,7 +26,7 @@ export default class TalkoServer {
 
         io.on('connection', (socket: any) => {
             if (this.defaultGreeting) {
-                socket.emit("greeting", "You are now connected! Welcome to talko")
+                socket.emit("greeting", "You are now connected! Welcome to talko");
             }
 
             this.session.handleConnection(socket);

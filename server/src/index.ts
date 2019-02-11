@@ -1,5 +1,5 @@
-import TalkoServer from './talko/server/TalkoServer';
-import Session from './talko/server/Session';
+import TalkoServer from "../../talko/server/TalkoServer";
+import Session from "../../talko/server/Session";
 
 const sessionHandler: Session = {
     handleConnection: socket => {
