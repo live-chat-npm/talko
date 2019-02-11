@@ -1,26 +1,27 @@
-const io = require("socket.io");
+const io = require("socket.io-client");
 
-var msg = "test";
+var socket;
 
-var socket = io();
+export default class Client {
+  sendM = msg => {
+    socket.emit("chat message", msg);
+  };
 
-function sendM(msg) {
-  //$("form").submit(function() {
-  socket.emit("chat message", msg); //$("#m").val());
-  //$("#m").val("");
+  init = upState => {
+    socket = io("http://localhost:3001");
+
+    socket.on("connect", () => {
+      console.log("CONNECTED!");
+      alert("CONNECTED to Chat Server!");
+    });
+
+    socket.on("chat message", function(msg) {
+      console.log(msg);
+      upState("> " + msg);
+    });
+  };
 }
 
-function handleMsgs() {
-  socket.on("connect", () => {
-    console.log("CONNECTED!");
-  });
-
-  socket.on("chat message", function(msg) {
-    console.log("> " + msg);
-  });
-}
-
-module.exports = {
-  sendM,
-  handleMsgs
-};
+// module.exports = {
+//   init
+// };

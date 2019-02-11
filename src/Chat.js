@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { ThemeProvider } from "styled-components";
 import logo from "./images/logo.jpg";
 import sendButton from "./images/send-button.png";
-import * as Client from "./client";
+import Client from "./client";
 import {
   ChatWindow,
   Input,
@@ -31,7 +31,15 @@ export default class Chat extends Component {
       minimized: true //Default position for chat window
     };
 
-    Client.handleMsgs();
+    this.Client = new Client();
+
+    this.updateState = this.updateState.bind(this);
+
+    this.Client.init(this.updateState);
+  }
+
+  updateState(m) {
+    this.setState({ messages: [...this.state.messages, m] });
   }
 
   //reference to the newest message in the message window
@@ -64,10 +72,10 @@ export default class Chat extends Component {
 
   //Adds the message to the messages array in state
   sendMessage = () => {
-    Client.sendM(this.state.input);
+    this.Client.sendM(this.state.input);
 
     this.setState({
-      messages: [...this.state.messages, this.state.input],
+      // messages: [...this.state.messages, this.state.input],
       input: ""
     });
   };
