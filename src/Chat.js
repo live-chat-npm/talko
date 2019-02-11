@@ -34,7 +34,9 @@ export default class Chat extends Component {
     this.Client = new Client();
 
     this.updateState = this.updateState.bind(this);
+  }
 
+  componentDidMount() {
     this.Client.init(this.updateState);
   }
 

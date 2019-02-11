@@ -1,6 +1,9 @@
 const io = require("socket.io-client");
+require("dotenv").config();
 
 var socket;
+
+const PORT = process.env.CLIENT_PORT || 5050;
 
 export default class Client {
   sendM = msg => {
@@ -8,7 +11,7 @@ export default class Client {
   };
 
   init = upState => {
-    socket = io("http://localhost:3000");
+    socket = io(":" + PORT);
 
     socket.on("connect", () => {
       console.log("CONNECTED!");
