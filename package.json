@@ -7,6 +7,8 @@
     "@types/body-parser": "^1.17.0",
     "@types/express": "^4.16.1",
     "@types/node": "^10.12.24",
+    "@types/react": "^16.8.2",
+    "@types/react-dom": "^16.8.0",
     "@types/socket.io": "^2.1.2",
     "body-parser": "^1.18.3",
     "dotenv": "^6.2.0",
@@ -14,15 +16,17 @@
     "react-dom": "^16.8.1",
     "react-scripts": "2.1.3",
     "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0",
+    "styled-components": "^4.1.3",
     "tslint": "^5.12.1",
-    "typescript": "^3.3.3",
-    "styled-components": "^4.1.3"
+    "typescript": "^3.3.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "concurrently": "\"tsc -w\" \"nodemon -e js,graphql --inspect dist/\""
   },
   "eslintConfig": {
     "extends": "react-app"
