@@ -20,7 +20,8 @@ export default class TalkoClient {
     });
 
     socket.on("greeting", msg => {
-      upState("SERVER: " + msg.greeting);
+      console.log(msg);
+      upState("SERVER: " + msg);
     });
 
     socket.on("disconnect", msg => {

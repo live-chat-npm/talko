@@ -26,12 +26,12 @@ export default class TalkoServer {
     );
 
     io.on("connection", (socket: any) => {
+      console.log("connected");
       if (this.defaultGreeting) {
         socket.emit("greeting", "You are now connected! Welcome to talko");
       }
 
-      // this.session.handleConnection(socket);
-      socket.on("send_message", msg => {
+      socket.on("send_message", (msg: any) => {
         console.log(msg);
         socket.emit("send_message", msg);
       });
@@ -41,5 +41,7 @@ export default class TalkoServer {
         console.log("disconnected");
       });
     });
+
+    // this.session.handleConnection(socket);
   }
 }
