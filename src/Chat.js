@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { ThemeProvider } from "styled-components";
 import logo from "./images/logo.jpg";
-import sendButton from "./images/send-button.png";
+import sendButtonBlack from "./images/send-button-black.png";
+import sendButtonWhite from "./images/send-button-white.png";
 import {
   ChatWindow,
   InputWindow,
@@ -19,7 +20,8 @@ import {
   Message,
   MaximizeButton,
   MinimizeButton,
-  Footer
+  Footer,
+  Credit
 } from "./ChatComponents";
 
 export default class Chat extends Component {
@@ -71,35 +73,39 @@ export default class Chat extends Component {
 
   render() {
     //Theme object holds css values that are passed into the theme provider
-    const theme = {
-      background: "",
-      color: "",
-      input: "",
-      header: "",
-      messageColor: ""
-    };
+    const theme = {};
 
     //Switch determines what values are held by the theme object based on the selected theme
     switch (this.props.theme) {
       case "light":
-        theme.background = "#fff";
+        theme.minimizedBackgroundColor = "#fff";
+        theme.maximizedBackground = "#fff";
         theme.color = "#0d0d0d";
         theme.input = "lightgray";
         theme.header = "#efefef";
         theme.messageColor = "#575757";
-        theme.profileBoxShadow = "#eeecec";
+        theme.profileBoxShadowColor = "#eeecec";
+        theme.profileBoxShadowSpread = "1px";
+        theme.inputWindowBorderColor = "#efefef";
+        theme.sendButton = sendButtonBlack;
         break;
       case "dark":
-        theme.background = "#1c1c1c";
+        theme.minimizedBackgroundColor = "#1c1c1c";
+        theme.maximizedBackground = "#1c1c1c";
         theme.color = "white";
         theme.input = "lightgray";
         theme.header = "000";
         theme.headerTitleColor = "#fff";
         theme.messageColor = "#fff";
         theme.profileBackground = "#1c1c1c";
-        theme.profileBoxShadow = "black";
+        theme.profileBoxShadowColor = "black";
+        theme.profileBoxShadowSpread = "-2px";
+        theme.nameColor = "#fff";
+        theme.titleColor = "#fff";
         theme.inputWindowBorderColor = "black";
         theme.footerBackgroundColor = "#1c1c1c";
+        theme.creditColor = "#fff";
+        theme.sendButton = sendButtonWhite;
         break;
       default:
         console.log("default theme");
@@ -157,18 +163,10 @@ export default class Chat extends Component {
                 value={this.state.input}
                 placeholder="Type in your message here..."
               />
-              <SendButton src={sendButton} onClick={this.sendMessage} />
+              <SendButton src={theme.sendButton} onClick={this.sendMessage} />
             </InputWindow>
             <Footer>
-              <p
-                style={{
-                  margin: 0,
-                  marginRight: "10px",
-                  textAlign: "right"
-                }}
-              >
-                Powered by Talko.io
-              </p>
+              <Credit>Powered by Talko.io</Credit>
             </Footer>
           </ChatWindow>
         )}

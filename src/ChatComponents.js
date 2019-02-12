@@ -36,7 +36,7 @@ const FadeIn = keyframes`
 
 //Parent component for entire chat window
 export const ChatWindow = styled.div`
-  background: ${props => props.theme.background};
+  background: ${props => props.theme.maximizedBackground};
   border-radius: 3px;
   color: #575757;
   height: 61vh;
@@ -101,7 +101,7 @@ export const SendButton = styled.img`
 export const MinimizedChatWindow = styled.div`
   display: flex;
   align-items: center;
-  background: #efefef;
+  background: ${props => props.theme.minimizedBackgroundColor};
   border-radius: 3px;
   height: 5vh;
   width: 300px;
@@ -129,7 +129,8 @@ export const Profile = styled.div`
   height: 11vh;
   width: 100%;
   background: ${props => props.theme.profileBackground};
-  box-shadow: 0px 0px 10px 1px ${props => props.theme.profileBoxShadow};
+  box-shadow: 0px 0px 10px ${props => props.theme.profileBoxShadowSpread}
+    ${props => props.theme.profileBoxShadowColor};
 `;
 
 export const ProfileImage = styled.img`
@@ -140,13 +141,13 @@ export const ProfileImage = styled.img`
 
 export const Name = styled.h1`
   font-size: 20px;
-  color: #575757;
+  color: ${props => props.theme.nameColor};
   margin-bottom: 2px;
 `;
 
 export const Title = styled.h1`
   font-size: 15px;
-  color: #575757;
+  color: ${props => props.theme.titleColor};
   margin: 0;
   font-weight: lighter;
 `;
@@ -158,12 +159,18 @@ export const Logo = styled.img`
   margin: 10px;
   margin-left: auto;
   margin-right: 15px;
-  box-shadow: 0px 0px 10px 1px lightgray;
 `;
 
 export const MessageWindow = styled.div`
   height: 35vh;
   overflow: auto;
+`;
+
+export const Message = styled.div`
+  font-size: 14px;
+  color: ${props => props.theme.messageColor};
+  padding-left: 10px;
+  padding-top: 10px;
 `;
 
 export const MaximizeButton = styled.div`
@@ -185,15 +192,16 @@ export const MinimizeButton = styled.div`
 `;
 
 export const Footer = styled.div`
+  height: calc(4vh - 20px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   width: 100%;
   font-size: 10px;
   background-color: ${props => props.theme.footerBackgroundColor};
-  height: 18px;
 `;
 
-export const Message = styled.div`
-  font-size: 14px;
-  color: ${props => props.theme.messageColor};
-  padding-left: 10px;
-  padding-top: 10px;
+export const Credit = styled.p`
+  color: ${props => props.theme.creditColor};
+  margin-right: 10px;
 `;

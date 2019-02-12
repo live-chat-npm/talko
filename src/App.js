@@ -11,7 +11,7 @@ class App extends Component {
           theme="light"
           profileImage={userImage}
           title="Manager"
-          name="Alex Allan"
+          name="Alex Alec"
           headerTitle="Live Chat"
         />
       </div>
