@@ -45,7 +45,7 @@ export const ChatWindow = styled.div`
   box-shadow: 0px 0px 10px 1px lightgray;
 `;
 
-//Component wraps the input field and the button
+//Component wraps the input field and the send button
 export const InputWindow = styled.div`
   display: flex;
   align-items: center;

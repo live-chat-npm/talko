@@ -3,6 +3,7 @@ import { ThemeProvider } from "styled-components";
 import logo from "./images/logo.jpg";
 import sendButtonBlack from "./images/send-button-black.png";
 import sendButtonWhite from "./images/send-button-white.png";
+import TalkoClient from "./client/TalkoClient";
 import {
   ChatWindow,
   InputWindow,
@@ -33,6 +34,18 @@ export default class Chat extends Component {
       input: "",
       minimized: true //Default position for chat window
     };
+
+    this.talkoClient = new TalkoClient(this.session);
+
+    this.updateState = this.updateState.bind(this);
+  }
+
+  componentDidMount() {
+    this.talkoClient.start(5050, this.updateState);
+  }
+
+  updateState(m) {
+    this.setState({ messages: [...this.state.messages, m] });
   }
 
   //reference to the newest message in the message window
@@ -65,8 +78,10 @@ export default class Chat extends Component {
 
   //Adds the message to the messages array in state
   sendMessage = () => {
+    this.talkoClient.sendMessage(this.state.input);
+
     this.setState({
-      messages: [...this.state.messages, this.state.input],
+      // messages: [...this.state.messages, this.state.input],
       input: ""
     });
   };
