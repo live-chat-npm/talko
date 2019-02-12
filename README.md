@@ -1,22 +1,13 @@
-//Setup libraries
-
 1. npm install --save
-   /////////////
-   //Transpile typescript for client
+   //Setup libraries
 
-2. tsc
-   /////////////
+2. cd server
+3. tsc
+4. cd ..
    //Transpile typescript for server
 
-3. cd server
-4. tsc
-5. cd ..
-   /////////////
+5. nodemon build/server/src
    //Run server
 
-6. nodemon build
-
-   /////////////
+6. nodemon
    //Run client
-
-7. nodemon
