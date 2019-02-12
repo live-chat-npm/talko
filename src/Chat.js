@@ -86,9 +86,14 @@ export default class Chat extends Component {
     this.talkoClient.sendMessage(msg);
 
     this.setState({
-      // messages: [...this.state.messages, this.state.input],
       input: ""
     });
+  };
+
+  pressedEnter = event => {
+    if (event.key === "Enter") {
+      this.sendMessage();
+    }
   };
 
   render() {
@@ -182,6 +187,7 @@ export default class Chat extends Component {
                 onChange={this.handleInput}
                 value={this.state.input}
                 placeholder="Type in your message here..."
+                onKeyPress={this.pressedEnter}
               />
               <SendButton src={theme.sendButton} onClick={this.sendMessage} />
             </InputWindow>
