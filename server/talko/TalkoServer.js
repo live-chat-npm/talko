@@ -1,8 +1,12 @@
 const http = require("http");
 const socketIO = require("socket.io");
 const TalkoSession = require('./TalkoSession');
+const express = require("express");
+const { json } = require("body-parser");
 
-const server = http.createServer();
+const app = express();
+app.use(json());
+const server = http.createServer(app);
 const io = socketIO(server);
 
 /**
@@ -32,13 +36,22 @@ class TalkoServer {
     start(port) {
         server.listen(port, () => console.log(`Talko sever listening on port ${port}`));
 
-        io.on("connection", socket => {
-            this.session.handleConnection(socket, defaultGreeting);
+        io.on("connection", (socket) => {
+            this.session.handleConnection(socket, this.defaultGreeting);
 
-            socket.on("send_message", msg => this.session.handleMessageSend(msg));
+            socket.on("send_message", msg => this.session.handleMessageSend(socket, msg));
 
-            socket.on("disconnect", () => this.session.handleDisconnect());
+            socket.on("disconnect", () => this.session.handleDisconnection());
         });
+    }
+
+    /**
+     * Gets the express app instance
+     * 
+     * @returns {app} the express app
+     */
+    getApp() {
+        return app;
     }
 
 }
