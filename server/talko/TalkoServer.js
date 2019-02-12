@@ -1,10 +1,12 @@
 const http = require("http");
 const socketIO = require("socket.io");
 const TalkoSession = require('./TalkoSession');
-// const express = require("express");
+const express = require("express");
+const { json } = require("body-parser");
 
-// const app = express();
-const server = http.createServer();
+const app = express();
+app.use(json());
+const server = http.createServer(app);
 const io = socketIO(server);
 
 /**
@@ -41,6 +43,15 @@ class TalkoServer {
 
             socket.on("disconnect", () => this.session.handleDisconnection());
         });
+    }
+
+    /**
+     * Gets the express app instance
+     * 
+     * @returns {app} the express app
+     */
+    getApp() {
+        return app;
     }
 
 }
