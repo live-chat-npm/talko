@@ -26,12 +26,12 @@ export default class Chat extends Component {
     super();
 
     this.state = {
-      messages: ["Hello, how may we help you?"],
+      messages: [],
       input: "",
       minimized: true //Default position for chat window
     };
 
-    this.talkoClient = new TalkoClient(this.session);
+    this.talkoClient = new TalkoClient();
 
     this.updateState = this.updateState.bind(this);
   }
@@ -74,7 +74,12 @@ export default class Chat extends Component {
 
   //Adds the message to the messages array in state
   sendMessage = () => {
-    this.talkoClient.sendMessage(this.state.input);
+    let msg = {
+      from: { id: 0, avatar: "", name: "React-Client" },
+      content: this.state.input
+    };
+
+    this.talkoClient.sendMessage(msg);
 
     this.setState({
       // messages: [...this.state.messages, this.state.input],
@@ -115,7 +120,7 @@ export default class Chat extends Component {
           <p style={{ margin: "1px", fontSize: "10px", fontWeight: "lighter" }}>
             {this.props.name} {new Date().toLocaleTimeString()}
           </p>
-          {message}
+          {message.content}
         </Message>
       );
     });
