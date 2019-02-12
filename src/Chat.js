@@ -1,14 +1,17 @@
 import React, { Component } from "react";
 import { ThemeProvider } from "styled-components";
 import logo from "./images/logo.jpg";
-import sendButton from "./images/send-button.png";
+import sendButtonBlack from "./images/send-button-black.png";
+import sendButtonWhite from "./images/send-button-white.png";
 import TalkoClient from "./client/TalkoClient";
 import {
   ChatWindow,
+  InputWindow,
   Input,
   SendButton,
   MinimizedChatWindow,
   Header,
+  HeaderTitle,
   Profile,
   ProfileImage,
   Name,
@@ -18,7 +21,8 @@ import {
   Message,
   MaximizeButton,
   MinimizeButton,
-  Footer
+  Footer,
+  Credit
 } from "./ChatComponents";
 
 export default class Chat extends Component {
@@ -83,33 +87,54 @@ export default class Chat extends Component {
     this.talkoClient.sendMessage(msg);
 
     this.setState({
-      // messages: [...this.state.messages, this.state.input],
       input: ""
     });
   };
 
+  pressedEnter = event => {
+    if (event.key === "Enter") {
+      this.sendMessage();
+    }
+  };
+
   render() {
     //Theme object holds css values that are passed into the theme provider
-    const theme = {
-      background: "",
-      color: "",
-      input: "",
-      header: ""
-    };
+    const theme = {};
 
     //Switch determines what values are held by the theme object based on the selected theme
     switch (this.props.theme) {
       case "light":
-        theme.background = "#fff";
+        theme.minimizedBackgroundColor = "#fff";
+        theme.maximizedBackground = "#fff";
         theme.color = "#0d0d0d";
         theme.input = "lightgray";
         theme.header = "#efefef";
+        theme.headerTitleColor = "#000";
+        theme.messageColor = "#575757";
+        theme.nameColor = "#000";
+        theme.profileBoxShadowColor = "#eeecec";
+        theme.profileBoxShadowSpread = "1px";
+        theme.inputWindowBorderColor = "#efefef";
+        theme.sendButton = sendButtonBlack;
         break;
       case "dark":
-        theme.background = "#0d0d0d";
-        theme.color = "#0d0d0d";
+        theme.minimizedBackgroundColor = "#1c1c1c";
+        theme.maximizedBackground = "#1c1c1c";
+        theme.color = "white";
         theme.input = "lightgray";
         theme.header = "000";
+        theme.headerTitleColor = "#fff";
+        theme.messageColor = "#fff";
+        theme.profileBackground = "#1c1c1c";
+        theme.profileBoxShadowColor = "transparent";
+        theme.profileBoxShadowSpread = "-2px";
+        theme.profileBorder = "solid 1px #4e5d61";
+        theme.nameColor = "#fff";
+        theme.titleColor = "#fff";
+        theme.inputWindowBorderColor = "#4e5d61";
+        theme.footerBackgroundColor = "#1c1c1c";
+        theme.creditColor = "#fff";
+        theme.sendButton = sendButtonWhite;
         break;
       default:
         console.log("default theme");
@@ -139,9 +164,8 @@ export default class Chat extends Component {
                 paddingLeft: "10px",
                 color: "#575757"
               }}
-            >
-              <h1>Live Chat</h1>
-            </div>
+            />
+            <HeaderTitle>{this.props.headerTitle}</HeaderTitle>
             <MaximizeButton onClick={this.toggleChatWindow}>
               &and;
             </MaximizeButton>
@@ -149,9 +173,7 @@ export default class Chat extends Component {
         ) : (
           <ChatWindow>
             <Header>
-              <div style={{ fontSize: "10px", paddingLeft: "10px" }}>
-                <h1>Live Chat</h1>
-              </div>
+              <HeaderTitle>{this.props.headerTitle}</HeaderTitle>
               <MinimizeButton onClick={this.toggleChatWindow}>
                 &or;
               </MinimizeButton>
@@ -167,33 +189,17 @@ export default class Chat extends Component {
             <MessageWindow>
               {dispMessages} <div ref={this.newMessage} />
             </MessageWindow>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                height: "50px",
-                borderTop: "solid 2px lightgray",
-                borderBottom: "solid 2px lightgray"
-              }}
-            >
+            <InputWindow>
               <Input
                 onChange={this.handleInput}
                 value={this.state.input}
                 placeholder="Type in your message here..."
+                onKeyPress={this.pressedEnter}
               />
-              <SendButton src={sendButton} onClick={this.sendMessage} />
-            </div>
+              <SendButton src={theme.sendButton} onClick={this.sendMessage} />
+            </InputWindow>
             <Footer>
-              <p
-                style={{
-                  margin: 0,
-                  marginRight: "10px",
-                  textAlign: "right"
-                }}
-              >
-                Powered by Talko.io
-              </p>
+              <Credit>Powered by Talko.io</Credit>
             </Footer>
           </ChatWindow>
         )}

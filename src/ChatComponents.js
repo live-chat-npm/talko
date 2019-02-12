@@ -13,16 +13,16 @@ const Maximize = keyframes`
 `;
 
 const Minimize = keyframes`
-      from {
-        height: 50vh
-        width: 368px;
-      } 
+  from {
+    height: 50vh
+    width: 368px;
+  } 
 
-      to {
-        height: 10vh
-        width: 300px;
-      }
-     `;
+  to {
+    height: 10vh
+    width: 300px;
+  }
+  `;
 
 const FadeIn = keyframes`
   from {
@@ -36,13 +36,23 @@ const FadeIn = keyframes`
 
 //Parent component for entire chat window
 export const ChatWindow = styled.div`
-  background: ${props => props.theme.background};
+  background: ${props => props.theme.maximizedBackground};
   border-radius: 3px;
   color: #575757;
   height: 61vh;
   width: 368px;
   animation: ${Maximize} 0.2s linear;
   box-shadow: 0px 0px 10px 1px lightgray;
+`;
+
+//Component wraps the input field and the send button
+export const InputWindow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 50px;
+  border-top: solid 2px ${props => props.theme.inputWindowBorderColor};
+  border-bottom: solid 2px ${props => props.theme.inputWindowBorderColor};
 `;
 
 //Input field for user input
@@ -54,40 +64,37 @@ export const Input = styled.input`
   color: ${props => props.theme.color};
   border: none;
   outline: none;
+  margin-left: 5px;
 
   &::-webkit-input-placeholder {
-    padding-left: 2px;
-    opacity: 0.3;
+    color: #575757;
   }
 
   &:-moz-placeholder {
-    padding-left: 2px;
-    opacity: 0.3;
+    color: #575757;
   }
 
   &::-moz-placeholder {
-    padding-left: 2px;
-    opacity: 0.3;
+    color: #575757;
   }
 
   &:-ms-input-placeholder {
-    padding-left: 2px;
-    opacity: 0.3;
+    color: #575757;
   }
 `;
 
 export const SendButton = styled.img`
-  opacity: 0.1;
+  // opacity: 0.1;
   padding-right: 15px;
   cursor: pointer;
   margin-bottom: 0;
-  animation: ${FadeIn} 0.3s linear;
+  animation: ${FadeIn} 0.1s linear;
 `;
 
 export const MinimizedChatWindow = styled.div`
   display: flex;
   align-items: center;
-  background: #efefef;
+  background: ${props => props.theme.minimizedBackgroundColor};
   border-radius: 3px;
   height: 5vh;
   width: 300px;
@@ -103,13 +110,23 @@ export const Header = styled.div`
   align-items: center;
 `;
 
+export const HeaderTitle = styled.h1`
+  color: ${props => props.theme.headerTitleColor};
+  font-size: 14px;
+  padding-left: 10px;
+`;
+
 //Parent div for profile image, name, title, and logo
 export const Profile = styled.div`
   display: flex;
   height: 11vh;
   width: 100%;
-  background: #fff;
-  box-shadow: 0px 0px 10px 1px #eeecec;
+  background: ${props => props.theme.profileBackground};
+  box-shadow: 0px 0px 10px ${props => props.theme.profileBoxShadowSpread}
+    //spread
+    ${props => props.theme.profileBoxShadowColor}; //color
+  border-top: ${props => props.theme.profileBorder};
+  border-bottom: ${props => props.theme.profileBorder};
 `;
 
 export const ProfileImage = styled.img`
@@ -120,13 +137,13 @@ export const ProfileImage = styled.img`
 
 export const Name = styled.h1`
   font-size: 20px;
-  color: #575757;
+  color: ${props => props.theme.nameColor};
   margin-bottom: 2px;
 `;
 
 export const Title = styled.h1`
   font-size: 15px;
-  color: #575757;
+  color: ${props => props.theme.titleColor};
   margin: 0;
   font-weight: lighter;
 `;
@@ -138,12 +155,18 @@ export const Logo = styled.img`
   margin: 10px;
   margin-left: auto;
   margin-right: 15px;
-  box-shadow: 0px 0px 10px 1px lightgray;
 `;
 
 export const MessageWindow = styled.div`
   height: 35vh;
-  overflow: scroll;
+  overflow: auto;
+`;
+
+export const Message = styled.div`
+  font-size: 14px;
+  color: ${props => props.theme.messageColor};
+  padding-left: 10px;
+  padding-top: 10px;
 `;
 
 export const MaximizeButton = styled.div`
@@ -165,15 +188,17 @@ export const MinimizeButton = styled.div`
 `;
 
 export const Footer = styled.div`
+  height: calc(4vh - 20px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   width: 100%;
   font-size: 10px;
-  background-color: #efefef;
-  height: 18px;
+  background-color: ${props => props.theme.footerBackgroundColor};
 `;
 
-export const Message = styled.div`
-  font-size: 14px;
-  color: #575757;
-  padding-left: 10px;
-  padding-top: 10px;
+export const Credit = styled.p`
+  color: ${props => props.theme.creditColor};
+  margin-right: 10px;
+  padding-top: 5px;
 `;
