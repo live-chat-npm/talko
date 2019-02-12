@@ -1,14 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "esnext",
-    "outDir": "./build",
-    "strict": true,
-    "rootDirs": [
-      "./talko",
-      "./server/src"
-    ],
-    "esModuleInterop": true,
+    "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -16,8 +8,11 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
