@@ -19,8 +19,8 @@ class TalkoSession {
      * 
      * @param {socket} socket - The socket that has connected
      */
-    handleConnection(socket) {
-        if (this.defaultGreeting) {
+    handleConnection(socket, defaultGreeting) {
+        if (defaultGreeting) {
             socket.emit("greeting", "You are now connected! Welcome to Talko!");
         }
     }
@@ -30,7 +30,7 @@ class TalkoSession {
      * 
      * @param {object} msg - The message object
      */
-    handleMessageSend(msg) {
+    handleMessageSend(socket, msg) {
         socket.emit("send_message", msg);
         socket.broadcast.emit("send_message", msg);
     }
