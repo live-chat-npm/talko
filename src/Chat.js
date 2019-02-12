@@ -136,7 +136,7 @@ export default class Chat extends Component {
                 color: "#575757"
               }}
             >
-              <h1>Live Chat</h1>
+              <h1>Talko Chat</h1>
             </div>
             <MaximizeButton onClick={this.toggleChatWindow}>
               &and;
@@ -146,7 +146,7 @@ export default class Chat extends Component {
           <ChatWindow>
             <Header>
               <div style={{ fontSize: "10px", paddingLeft: "10px" }}>
-                <h1>Live Chat</h1>
+                <h1>Talko Chat</h1>
               </div>
               <MinimizeButton onClick={this.toggleChatWindow}>
                 &or;

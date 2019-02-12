@@ -4,4 +4,7 @@
   bottom: 0;
 }
 
+.Users {
+  position: absolute;
+}
 /* example of how a user will implement their own styling of our component */

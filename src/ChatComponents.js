@@ -177,3 +177,25 @@ export const Message = styled.div`
   padding-left: 10px;
   padding-top: 10px;
 `;
+
+// Styled components for UserList
+//************************************* */
+
+export const UserListWindow = styled.div`
+  background: ${props => props.theme.background};
+  border-radius: 3px;
+  color: #575757;
+  height: 20vh;
+  width: 300px;
+  box-shadow: 0px 0px 10px 1px lightgray;
+`
+export const UsersList = styled.ul`
+  list-style-type: none;
+`
+export const User = styled.li`
+  color: #000
+  &:hover {
+    color: #fa923f;
+  }
+
+`
