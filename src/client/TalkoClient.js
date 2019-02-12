@@ -1,47 +1,57 @@
 import * as io from "socket.io-client";
+require("dotenv").config();
 
-// require("dotenv").config();
-// const PORT = process.env.CLIENT_PORT || 5050;
+// SERVER connection object
 var socket;
-var name;
-// session: Session;
 
+/**
+ * @class [TalkoClient] :toolkit for talko client
+ */
 export default class TalkoClient {
-  // constructor() {
-  //   this.session = session;
-  // }
+  /**
+   * @function start :initializes necessary socket and listeners
+   * @param {number} port
+   * @param {callback} upState
+   */
+  start(port, upState) {
+    if (!port) port = process.env.CLIENT_PORT || 5050;
 
-  start = (port, upState, username) => {
+    // Connect to SERVER on specified port
     socket = io(":" + port);
-    name = username;
 
+    // Connect to SERVER acknowledgement
     socket.on("connect", () => {
-      alert("CONNECTED to Chat Server!");
+      console.log("CONNECTED to Chat Server!");
     });
 
+    // Receive greeting (msg.content <string>) from SERVER
     socket.on("greeting", message => {
-      // upState(message);
+      upState({
+        from: {
+          id: -1,
+          avatar: "",
+          name: "-=:SERVER:=-"
+        },
+        content: message
+      });
+    });
+
+    // Perform disconnection
+    socket.on("disconnect", message => {
       console.log("SERVER: " + message);
     });
 
-    socket.on("disconnect", message => {
-      // upState();
-      alert(
-        "SERVER MESSAGE: " +
-          message +
-          "\nADD DISCONNECT HERE IN /src/client/TakoClient.js"
-      );
-      console.log("SERVER: " + message.content);
-    });
-
+    // Receive msg from SERVER
     socket.on("send_message", message => {
       upState(message);
-      console.log("RCVD: " + message.content);
     });
-  };
+  }
 
-  sendMessage = message => {
-    console.log("SENT: " + message.content);
+  /**
+   * @function sendMessage :sends message object to server.
+   * @param {message{from:{id:number, avatar:string, name:string}, content:string} message
+   */
+  sendMessage(message) {
     socket.emit("send_message", message);
-  };
+  }
 }
