@@ -34,6 +34,7 @@ export default class TalkoServer {
       socket.on("send_message", (msg: any) => {
         console.log(msg);
         socket.emit("send_message", msg);
+        socket.broadcast.emit("send_message", msg);
       });
 
       // on disconnect
