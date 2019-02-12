@@ -4,7 +4,7 @@
     "target": "es6", //_ Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. _/
     "module": "commonjs", //_ Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. _/
     "outDir": "../build", //_ Redirect output structure to the directory. _/
-    // "rootDir": "./server", /_ Specify the root directory of input files. Use to control the output directory structure with --outDir. _/
+    //    "rootDir": "./server", /_ Specify the root directory of input files. Use to control the output directory structure with --outDir. _/
     // "composite": true, /_ Enable project compilation _/
     // "removeComments": true, /_ Do not emit comments to output. _/
     // "noEmit": true, /_ Do not emit outputs. _/
