@@ -75,6 +75,7 @@ export default class Chat extends Component {
   //Adds the message to the messages array in state
   sendMessage = () => {
     let msg = {
+      time: new Date().toLocaleTimeString(),
       from: { id: 0, avatar: "", name: "React-Client" },
       content: this.state.input
     };
@@ -118,7 +119,10 @@ export default class Chat extends Component {
       return (
         <Message key={index}>
           <p style={{ margin: "1px", fontSize: "10px", fontWeight: "lighter" }}>
-            {this.props.name} {new Date().toLocaleTimeString()}
+            {message.from.name}{" "}
+            {message.time != undefined
+              ? message.time
+              : "no time:" + new Date().toLocaleTimeString()}
           </p>
           {message.content}
         </Message>
