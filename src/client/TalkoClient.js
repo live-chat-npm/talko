@@ -30,7 +30,7 @@ export default class TalkoClient {
         from: {
           id: -1,
           avatar: "",
-          name: "-=:SERVER:=-"
+          name: "-=SERVER=-"
         },
         content: message
       });

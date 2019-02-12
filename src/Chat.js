@@ -120,9 +120,7 @@ export default class Chat extends Component {
         <Message key={index}>
           <p style={{ margin: "1px", fontSize: "10px", fontWeight: "lighter" }}>
             {message.from.name}{" "}
-            {message.time != undefined
-              ? message.time
-              : "no time:" + new Date().toLocaleTimeString()}
+            {message.time != undefined ? message.time : null}
           </p>
           {message.content}
         </Message>
