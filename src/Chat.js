@@ -118,7 +118,7 @@ export default class Chat extends Component {
       return (
         <Message key={index}>
           <p style={{ margin: "1px", fontSize: "10px", fontWeight: "lighter" }}>
-            {this.props.name} {new Date().toLocaleTimeString()}
+            {message.from.name} {new Date().toLocaleTimeString()}
           </p>
           {message.content}
         </Message>
