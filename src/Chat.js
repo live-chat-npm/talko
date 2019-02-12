@@ -108,7 +108,9 @@ export default class Chat extends Component {
         theme.color = "#0d0d0d";
         theme.input = "lightgray";
         theme.header = "#efefef";
+        theme.headerTitleColor = "#000";
         theme.messageColor = "#575757";
+        theme.nameColor = "#000";
         theme.profileBoxShadowColor = "#eeecec";
         theme.profileBoxShadowSpread = "1px";
         theme.inputWindowBorderColor = "#efefef";
@@ -123,11 +125,12 @@ export default class Chat extends Component {
         theme.headerTitleColor = "#fff";
         theme.messageColor = "#fff";
         theme.profileBackground = "#1c1c1c";
-        theme.profileBoxShadowColor = "black";
+        theme.profileBoxShadowColor = "transparent";
         theme.profileBoxShadowSpread = "-2px";
+        theme.profileBorder = "solid 1px #4e5d61";
         theme.nameColor = "#fff";
         theme.titleColor = "#fff";
-        theme.inputWindowBorderColor = "black";
+        theme.inputWindowBorderColor = "#4e5d61";
         theme.footerBackgroundColor = "#1c1c1c";
         theme.creditColor = "#fff";
         theme.sendButton = sendButtonWhite;

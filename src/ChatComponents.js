@@ -64,38 +64,31 @@ export const Input = styled.input`
   color: ${props => props.theme.color};
   border: none;
   outline: none;
+  margin-left: 5px;
 
   &::-webkit-input-placeholder {
-    padding-left: 2px;
-    opacity: 0.3;
     color: #575757;
   }
 
   &:-moz-placeholder {
-    padding-left: 2px;
-    opacity: 0.3;
     color: #575757;
   }
 
   &::-moz-placeholder {
-    padding-left: 2px;
-    opacity: 0.3;
     color: #575757;
   }
 
   &:-ms-input-placeholder {
-    padding-left: 2px;
-    opacity: 0.3;
     color: #575757;
   }
 `;
 
 export const SendButton = styled.img`
-  opacity: 0.1;
+  // opacity: 0.1;
   padding-right: 15px;
   cursor: pointer;
   margin-bottom: 0;
-  animation: ${FadeIn} 0.3s linear;
+  animation: ${FadeIn} 0.1s linear;
 `;
 
 export const MinimizedChatWindow = styled.div`
@@ -130,7 +123,10 @@ export const Profile = styled.div`
   width: 100%;
   background: ${props => props.theme.profileBackground};
   box-shadow: 0px 0px 10px ${props => props.theme.profileBoxShadowSpread}
-    ${props => props.theme.profileBoxShadowColor};
+    //spread
+    ${props => props.theme.profileBoxShadowColor}; //color
+  border-top: ${props => props.theme.profileBorder};
+  border-bottom: ${props => props.theme.profileBorder};
 `;
 
 export const ProfileImage = styled.img`
@@ -204,4 +200,5 @@ export const Footer = styled.div`
 export const Credit = styled.p`
   color: ${props => props.theme.creditColor};
   margin-right: 10px;
+  padding-top: 5px;
 `;
