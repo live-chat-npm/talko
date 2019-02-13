@@ -26,9 +26,6 @@ export default class TalkoClient {
       console.log("CONNECTED to Chat Server!");
     });
 
-    //TEST CODE
-    socket.on('testerEvent', function(data){console.log(data.clients)});
-
     // Receive greeting (msg.content <string>) from SERVER
     socket.on("greeting", message => {
       upState({
