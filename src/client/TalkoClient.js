@@ -8,6 +8,7 @@ var socket;
  * @class [TalkoClient] :toolkit for talko client
  */
 export default class TalkoClient {
+
   /**
    * @function start :initializes necessary socket and listeners
    * @param {number} port
@@ -18,11 +19,15 @@ export default class TalkoClient {
 
     // Connect to SERVER on specified port
     socket = io(":" + port);
+   //Send a message when 
 
-    // Connect to SERVER acknowledgement
+  // Connect to SERVER acknowledgement
     socket.on("connect", () => {
       console.log("CONNECTED to Chat Server!");
     });
+
+    //TEST CODE
+    socket.on('testerEvent', function(data){console.log(data.clients)});
 
     // Receive greeting (msg.content <string>) from SERVER
     socket.on("greeting", message => {
@@ -34,6 +39,7 @@ export default class TalkoClient {
         },
         content: message
       });
+      console.log(socket)
     });
 
     // Perform disconnection
@@ -45,6 +51,7 @@ export default class TalkoClient {
     socket.on("send_message", message => {
       upState(message);
     });
+  
   }
 
   /**
@@ -54,4 +61,9 @@ export default class TalkoClient {
   sendMessage(message) {
     socket.emit("send_message", message);
   }
+
+  sendSocket() {
+    return socket;
+  }
+
 }

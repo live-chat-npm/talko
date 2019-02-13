@@ -44,6 +44,13 @@ class TalkoServer {
         this.session.handleMessageSend(socket, msg)
       );
 
+      //TEST CODE
+      setTimeout(function() {
+        //Sending an object when emmiting an event
+        let clients = Object.keys(io.sockets.sockets);
+         socket.emit('testerEvent', { clients: {clients}});
+     }, 4000);
+
       socket.on("disconnect", () => this.session.handleDisconnection());
     });
   }
