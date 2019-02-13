@@ -24,6 +24,7 @@ import {
   Footer,
   Credit
 } from "./ChatComponents";
+import SessionHandler from "./client/SessionHandler";
 
 export default class Chat extends Component {
   constructor() {
@@ -35,7 +36,9 @@ export default class Chat extends Component {
       minimized: true //Default position for chat window
     };
 
-    this.talkoClient = new TalkoClient();
+    this.sessionHandler = new SessionHandler();
+
+    this.talkoClient = new TalkoClient(this.sessionHandler);
 
     this.updateState = this.updateState.bind(this);
   }
@@ -80,7 +83,7 @@ export default class Chat extends Component {
   sendMessage = () => {
     let msg = {
       time: new Date().toLocaleTimeString(),
-      from: { id: 0, avatar: "", name: "React-Client" },
+      from: { id: -1, avatar: "", name: "" },
       content: this.state.input
     };
 
@@ -145,9 +148,7 @@ export default class Chat extends Component {
         <Message key={index}>
           <p style={{ margin: "1px", fontSize: "10px", fontWeight: "lighter" }}>
             {message.from.name}{" "}
-            {message.time != undefined
-              ? message.time
-              : "no time:" + new Date().toLocaleTimeString()}
+            {message.time !== undefined ? message.time : null}
           </p>
           {message.content}
         </Message>
