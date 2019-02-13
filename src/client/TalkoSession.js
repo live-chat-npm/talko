@@ -34,7 +34,6 @@ export default class TalkoSession {
   handleMessageSend(socket, msg) {
     const message = { ...msg };
     message.from.id = socket.id;
-    message.from.name = "(React) Customer";
     socket.emit("send_message", message);
   }
 
