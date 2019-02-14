@@ -1,8 +1,13 @@
 import * as io from "socket.io-client";
+import Message from "./Message";
+import SessionHandler from "./SessionHandler";
 require("dotenv").config();
+
+var port = process.env.CLIENT_PORT || 5050;
 
 // SERVER connection object
 var socket;
+// const updateMsgs;
 
 /**
  * @class [TalkoClient] :toolkit for talko client
@@ -10,43 +15,54 @@ var socket;
 export default class TalkoClient {
 
   /**
-   * @function start :initializes necessary socket and listeners
-   * @param {number} port
+   * @function constructor :setup components message state setter and session for rep client
+   * @param {SessionHandler} session
    * @param {callback} upState
    */
-  start(port, upState) {
-    if (!port) port = process.env.CLIENT_PORT || 5050;
-
+  constructor(session, upState) {
+    this.session = session;
+    this.upState = upState;
+  }
+  /**
+   * @function start :initializes necessary socket and listeners
+   */
+  start(upState) {
     // Connect to SERVER on specified port
     socket = io(":" + port);
    //Send a message when 
 
   // Connect to SERVER acknowledgement
     socket.on("connect", () => {
-      console.log("CONNECTED to Chat Server!");
+      this.session.handleConnection();
     });
 
     // Receive greeting (msg.content <string>) from SERVER
     socket.on("greeting", message => {
-      upState({
-        from: {
-          id: -1,
-          avatar: "",
-          name: "-=:SERVER:=-"
-        },
-        content: message
-      });
-      console.log(socket)
+      let incGreetingMsg = Message(null, 0, "-=SERVER=-", null, message);
+      this.upState(incGreetingMsg);
+      // Outgoing Message Identifying as Customer
+      let outIdentifyMsg = Message(
+        new Date().toUTCString(),
+        socket.id,
+        "(React) Customer",
+        null,
+        "Customer"
+      );
+      socket.emit("identify", outIdentifyMsg);
+    });
+
+    socket.on("rep_found", message => {
+      this.upState(message);
     });
 
     // Perform disconnection
     socket.on("disconnect", message => {
-      console.log("SERVER: " + message);
+      this.session.handleDisconnection(message);
     });
 
     // Receive msg from SERVER
     socket.on("send_message", message => {
-      upState(message);
+      this.session.handleMessageReceived(this.upState, message);
     });
   
   }
@@ -56,7 +72,8 @@ export default class TalkoClient {
    * @param {message{from:{id:number, avatar:string, name:string}, content:string} message
    */
   sendMessage(message) {
-    socket.emit("send_message", message);
+    message.from.name = "(React) Customer";
+    this.session.handleMessageSend(socket, message);
   }
 
   sendSocket() {

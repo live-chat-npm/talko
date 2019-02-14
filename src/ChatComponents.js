@@ -210,7 +210,7 @@ export const UserListWindow = styled.div`
   background: ${props => props.theme.background};
   border-radius: 3px;
   color: #575757;
-  height: 20vh;
+  height: 100vh;
   width: 300px;
   box-shadow: 0px 0px 10px 1px lightgray;
 `
