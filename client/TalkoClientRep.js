@@ -3,6 +3,8 @@ import Message from "./Message";
 import SessionHandler from "./SessionHandler";
 require("dotenv").config();
 
+//2D ARRAY OF CUSTOMER ROOMS AND MSGS
+
 // SERVER connection object
 var offerSocket;
 var offerCustId;
@@ -54,6 +56,7 @@ export default class TalkoClient {
       if (offerCustId == null) {
         offerCustId = message.from.id;
         this.upState(message);
+        //PASS ALERT UP TO COMPONENT AND FROM COMPONENT UP TO CLIENT LIST COMPONENT
       } else {
         let outOfferBusyMsg = Message(
           new Date().toUTCString(),

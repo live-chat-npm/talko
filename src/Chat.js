@@ -3,7 +3,7 @@ import { ThemeProvider } from "styled-components";
 import logo from "./images/logo.jpg";
 import sendButtonBlack from "./images/send-button-black.png";
 import sendButtonWhite from "./images/send-button-white.png";
-import TalkoClient from "./client/TalkoClient";
+import TalkoClient from "talko-client";
 import {
   ChatWindow,
   InputWindow,
@@ -24,7 +24,6 @@ import {
   Footer,
   Credit
 } from "./ChatComponents";
-import SessionHandler from "./client/SessionHandler";
 
 export default class Chat extends Component {
   constructor() {
@@ -37,9 +36,7 @@ export default class Chat extends Component {
     };
     this.updateState = this.updateState.bind(this);
 
-    this.sessionHandler = new SessionHandler();
-
-    this.talkoClient = new TalkoClient(this.sessionHandler, this.updateState);
+    this.talkoClient = new TalkoClient(this.updateState);
   }
 
   componentDidMount() {
