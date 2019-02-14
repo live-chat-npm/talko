@@ -13,6 +13,7 @@ var socket;
  * @class [TalkoClient] :toolkit for talko client
  */
 export default class TalkoClient {
+
   /**
    * @function constructor :setup components message state setter and session for rep client
    * @param {SessionHandler} session
@@ -28,8 +29,9 @@ export default class TalkoClient {
   start(upState) {
     // Connect to SERVER on specified port
     socket = io(":" + port);
+   //Send a message when 
 
-    // Connect to SERVER acknowledgement
+  // Connect to SERVER acknowledgement
     socket.on("connect", () => {
       this.session.handleConnection();
     });
@@ -62,6 +64,7 @@ export default class TalkoClient {
     socket.on("send_message", message => {
       this.session.handleMessageReceived(this.upState, message);
     });
+  
   }
 
   /**
@@ -72,4 +75,9 @@ export default class TalkoClient {
     message.from.name = "(React) Customer";
     this.session.handleMessageSend(socket, message);
   }
+
+  sendSocket() {
+    return socket;
+  }
+
 }
