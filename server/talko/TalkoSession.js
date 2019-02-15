@@ -26,13 +26,25 @@ class TalkoSession {
     }
 
     /**
+     * Handles the joining of a socket room
+     * 
+     * @param {socket} socket - The socket that is sending data
+     * @param {number} room - The room that we're joining
+     */
+    handleRoomJoin(socket, room) {
+        socket.join(room);
+    }
+
+    /**
      * Handles received messages sent from the talko client
      * 
      * @param {object} msg - The message object
      */
     handleMessageSend(socket, msg) {
-        socket.emit("send_message", msg);
-        socket.broadcast.emit("send_message", msg);
+        const { room } = msg;
+        socket.broadcast.to(room).emit("send_message", msg);
+        // socket.emit("send_message", msg);
+        // socket.broadcast.emit("send_message", msg);
     }
 
     /**
