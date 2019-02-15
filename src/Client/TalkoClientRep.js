@@ -7,8 +7,8 @@ require("dotenv").config();
 
 // SERVER connection object
 var offerSocket;
-var offerCustId;
-var offerCustName;
+var offerCustId = 1;
+var offerCustName = "Customer 1";
 var custSockets = {};
 var port = process.env.CLIENT_PORT || 5050;
 
@@ -103,9 +103,11 @@ export default class TalkoClientRep {
     );
     offerSocket.emit("offer_accept", outOfferAcceptMsg);
     //add new Socket connection to custSockets by custID
-    custSockets = { ...custSockets, offerCustId: io(":" + port) };
+    // let newCustSock = {};
+    // newCustSock[offerCustId] = io(":" + port);
+    custSockets[offerCustId] = io(":" + port);
     //init listeners for new customer connection
-    this.startCustConnection(custSockets.offerCustId, offerCustId);
+    this.startCustConnection(custSockets[offerCustId], offerCustId);
 
     let ocid = offerCustId;
     let ocn = offerCustName;

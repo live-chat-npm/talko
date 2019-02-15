@@ -8,12 +8,13 @@ class UserList extends Component {
     super();
     this.state = {
       tabs: [],
-      chatHistory: { null: [null] }, //user.id : [Message ...]
-      currentCustomer: "", //user.id
-      customerList: { "Customer 1": 1, "Customer 2": 2 },
+      chatHistory: {}, //user.id : [Message ...]
+      currentCustomer: {}, //user.id
+      customerList: [{ "Customer 1": 1 }, { "Customer 2": 2 }],
       currentMessage: "" //input field
     };
     this.sendMsg = this.sendMsg.bind(this);
+    this.updateState = this.updateState.bind(this);
 
     this.tRep = new TalkoClientRep(this.updateState);
   }
@@ -25,7 +26,7 @@ class UserList extends Component {
   updateState(m, id) {
     let newMsg = {};
     // let idd = id;
-    newMsg[id] = { ...this.state.chatHistory.id, m };
+    newMsg[id] = { ...this.state.chatHistory[id], m };
     this.setState({
       chatHistory: { ...this.state.chatHistory, newMsg }
     });
@@ -33,10 +34,10 @@ class UserList extends Component {
 
   sendMsg() {
     this.tRep.sendMessage(
-      this.state.customerList.customer,
+      Object.values(this.state.currentCustomer),
       new Message(
         new Date().toUTCString(),
-        null,
+        0,
         null,
         null,
         this.state.currentMessage
@@ -45,7 +46,9 @@ class UserList extends Component {
   }
 
   createTab = customer => {
-    this.setState({ tabs: [...this.state.tabs, customer] });
+    this.setState((this.state.currentCustomer = customer));
+    console.log(Object.values(this.state.currentCustomer));
+    this.setState({ tabs: [...this.state.tabs, Object.keys(customer)] });
   };
   acceptCustomer = () => {
     let newC = {};
@@ -56,7 +59,11 @@ class UserList extends Component {
   };
 
   render() {
-    var chatHistory = <div>{this.state.chatHistory.currentCustomer}</div>;
+    var chatHistory = (
+      <div>
+        {this.state.chatHistory[Object.values(this.state.currentCustomer)]}
+      </div>
+    );
     // let chatHistory = this.state.chatHistory.map((history, index) => {
 
     let selectTabs = this.state.tabs.map((tab, index) => {
@@ -74,16 +81,14 @@ class UserList extends Component {
         </div>
       );
     });
-    for (let customer in this.state.customerList) {
-      var roster = () => {
-        return (
-          // this.state.customerList.map((customer, index) => {
-          <User onClick={() => this.createTab(customer.valueOf())}>
-            {"Status: " + customer.valueOf()}
-          </User>
-        );
-      };
-    }
+    // for (let customer in this.state.customerList) {
+    var roster = this.state.customerList.map((customer, index) => {
+      return (
+        <User key={index} onClick={() => this.createTab(customer)}>
+          {"Status: " + Object.keys(customer)}
+        </User>
+      );
+    });
     return (
       <div>
         <UserListWindow>
