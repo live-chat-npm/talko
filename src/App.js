@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import "./App.css";
-// import Chat from "./Chat";
-import { Chat } from 'talko-react';
+import Chat from "./Chat";
+import UserList from "./UserList"
 import userImage from "./images/user-image.jpg";
-import SessionHandler from './SessionHandler';
 
 class App extends Component {
   render() {
@@ -11,15 +10,17 @@ class App extends Component {
     // console.log("handler", sessionHandler)
     console.log("chat", Chat)
     return (
-      <div className="App">
-        <Chat
-          theme="light"
-          profileImage={userImage}
-          title="Manager"
-          name="Alex Alec"
-          headerTitle="Live Chat"
-          sessionHandler={sessionHandler}
-        />
+      <div>
+        <div className="App">
+          <Chat
+            theme="light"
+            profileImage={userImage}
+            title="Manager"
+            name="Alex Alec"
+            headerTitle="Live Chat"
+          />
+        </div>
+        <UserList/>
       </div>
     );
   }
