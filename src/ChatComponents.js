@@ -213,14 +213,21 @@ export const UserListWindow = styled.div`
   height: 100vh;
   width: 300px;
   box-shadow: 0px 0px 10px 1px lightgray;
-`
+`;
 export const UsersList = styled.ul`
   list-style-type: none;
-`
+`;
 export const User = styled.li`
   color: #000
   &:hover {
     color: #fa923f;
   }
 
-`
+`;
+
+// Stled componets for contact form
+export const Form = styled.form`
+  background: ${props => props.theme.background};
+  border-radius: 4px;
+  color: ${props => props.theme.color};
+`;

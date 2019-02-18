@@ -3,7 +3,7 @@ import { ThemeProvider } from "styled-components";
 import logo from "./images/logo.jpg";
 import sendButtonBlack from "./images/send-button-black.png";
 import sendButtonWhite from "./images/send-button-white.png";
-import TalkoClient from "./Client/TalkoClient";
+import TalkoClient from "./client/TalkoClient";
 import {
   ChatWindow,
   InputWindow,
@@ -24,6 +24,7 @@ import {
   Footer,
   Credit
 } from "./ChatComponents";
+import ContactForm from './ContactForm'
 
 export default class Chat extends Component {
   constructor() {
@@ -174,7 +175,8 @@ export default class Chat extends Component {
                 &or;
               </MinimizeButton>
             </Header>
-            <Profile>
+            <ContactForm />
+            {/* <Profile>
               <ProfileImage src={this.props.profileImage} />
               <div>
                 <Name>{this.props.name}</Name>
@@ -193,7 +195,7 @@ export default class Chat extends Component {
                 onKeyPress={this.pressedEnter}
               />
               <SendButton src={theme.sendButton} onClick={this.sendMessage} />
-            </InputWindow>
+            </InputWindow> */}
             <Footer>
               <Credit>Powered by Talko.io</Credit>
             </Footer>
