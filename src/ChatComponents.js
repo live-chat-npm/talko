@@ -233,7 +233,7 @@ export const User = styled.li`
   align-items: center;
   padding-left: 10px;
   &:hover {
-    color: #ff6a6a;
+    color: lightgray;
     cursor: pointer;
   }
 `;
