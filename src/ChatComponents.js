@@ -211,16 +211,55 @@ export const UserListWindow = styled.div`
   border-radius: 3px;
   color: #575757;
   height: 100vh;
-  width: 300px;
+  width: 20vw;
   box-shadow: 0px 0px 10px 1px lightgray;
-`
+`;
 export const UsersList = styled.ul`
   list-style-type: none;
-`
+`;
+
 export const User = styled.li`
   color: #000
   &:hover {
     color: #fa923f;
+    cursor: pointer;
   }
+`;
 
-`
+export const UserMessagesWindow = styled.div`
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const TabWindow = styled.div`
+  width: 100%;
+  height: 4vh;
+  display: flex;
+  overflow-x: auto;
+`;
+
+export const Tab = styled.div`
+  border: solid 2px black;
+  width: 100px;
+  height: 20px;
+  cursor: pointer;
+  display: flex;
+`;
+
+export const ChatContentWindow = styled.div`
+  box-shadow: 0px 0px 10px -5px lightgray;
+  width: 80vw;
+  height: 90vh;
+`;
+
+export const ReplyInputWindow = styled.div`
+  width: 100%;
+  height: 50px;
+  display: flex;
+`;
+
+export const ReplyInput = styled.input`
+  width: 100%;
+  height: 5vh;
+`;
