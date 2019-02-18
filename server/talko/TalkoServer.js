@@ -38,10 +38,14 @@ class TalkoServer {
     );
 
     io.on("connection", socket => {
-      this.session.handleConnection(socket, this.defaultGreeting);
+      this.session.handleConnection(socket);
+
+      socket.on("customer", name => {
+        this.session.handleCustomer(socket, name);
+      });
 
       socket.on("join", room => {
-        socket.join(room);
+        this.session.handleRoomJoin(socket, room, defaultGreeting);
       });
 
       socket.on("send_message", msg =>

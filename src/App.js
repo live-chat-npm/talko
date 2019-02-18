@@ -6,7 +6,7 @@ import userImage from "./images/user-image.jpg";
 
 class App extends Component {
   render() {
-    const sessionHandler = new SessionHandler();
+    // const sessionHandler = new SessionHandler();
     // console.log("handler", sessionHandler)
     console.log("chat", Chat)
     return (
