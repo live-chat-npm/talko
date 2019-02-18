@@ -207,23 +207,43 @@ export const Credit = styled.p`
 //************************************* */
 
 export const UserListWindow = styled.div`
-  background: ${props => props.theme.background};
+  background: #2f363e;
   border-radius: 3px;
   color: #575757;
   height: 100vh;
   width: 20vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   box-shadow: 0px 0px 10px 1px lightgray;
 `;
+
 export const UsersList = styled.ul`
   list-style-type: none;
+  padding-left: 0;
+  width: 100%;
 `;
 
 export const User = styled.li`
-  color: #000
+  color: #fff
+  height: 30px;
+  width: 100%;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
   &:hover {
-    color: #fa923f;
+    color: #ff6a6a;
     cursor: pointer;
   }
+`;
+
+export const Status = styled.div`
+  border-radius: 999em;
+  height: 8px;
+  width: 8px;
+  margin-right: 10px;
+  background-color: #84ff84;
 `;
 
 export const UserMessagesWindow = styled.div`

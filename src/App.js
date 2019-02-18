@@ -9,13 +9,13 @@ class App extends Component {
     return (
       <div>
         <div className="App">
-          {/* <Chat
+          <Chat
             theme="light"
             profileImage={userImage}
             title="Manager"
             name="Alex Alec"
             headerTitle="Live Chat"
-          /> */}
+          />
         </div>
         <UserList />
       </div>

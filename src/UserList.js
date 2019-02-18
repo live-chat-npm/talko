@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import TalkoClientRep from "./client/TalkoClientRep";
+import Message from "./client/Messages/Message";
 import {
   UserListWindow,
   Header,
@@ -10,7 +11,8 @@ import {
   Tab,
   ChatContentWindow,
   ReplyInputWindow,
-  ReplyInput
+  ReplyInput,
+  Status
 } from "./ChatComponents";
 
 class UserList extends Component {
@@ -92,9 +94,11 @@ class UserList extends Component {
         } else {
           nextCustomer = this.state.tabs[nextCustomerIndex - 1];
         }
+
         var currentChatHistory = this.state.customerList.find(
           cust => cust.name === nextCustomer
         );
+
         if (currentChatHistory) {
           this.setState({
             chatHistory: [currentChatHistory.chat]
@@ -146,12 +150,11 @@ class UserList extends Component {
   };
 
   acceptCustomer = () => {
-    let newCustomer = {};
-    newCustomer = this.tRep.offerAccept();
-
-    this.setState({
-      customerList: { ...this.state.customerList, newCustomer }
-    });
+    let newC = {};
+    newC = this.tRep.offerAccept();
+    // let newCID = this.tRep.offerAccept();
+    // let newCList = Object.assign({}, this.tRep.offerAccept());
+    this.setState({ customerList: { ...this.state.customerList, newC } });
   };
 
   render() {
@@ -179,6 +182,7 @@ class UserList extends Component {
           key={index}
           onClick={() => this.createTab(customer.name, customer.chat)}
         >
+          <Status />
           {customer.name}
         </User>
       );
@@ -188,7 +192,7 @@ class UserList extends Component {
       <div style={{ display: "flex" }}>
         <UserListWindow>
           <Header>
-            <div>
+            <div style={{ fontSize: "15px", color: "white" }}>
               <h1>Customers</h1>
             </div>
           </Header>
