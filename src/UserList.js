@@ -1,20 +1,34 @@
 import React, { Component } from "react";
-import { UserListWindow, Header, UsersList, User } from "./ChatComponents";
 import TalkoClientRep from "./client/TalkoClientRep";
 import Message from "./client/Messages/Message";
+import {
+  UserListWindow,
+  Header,
+  UsersList,
+  User,
+  UserMessagesWindow,
+  TabWindow,
+  Tab,
+  ChatContentWindow,
+  ReplyInputWindow,
+  ReplyInput,
+  Status
+} from "./ChatComponents";
 
 class UserList extends Component {
   constructor() {
     super();
     this.state = {
       tabs: [],
-      chatHistory: {}, //user.id : [Message ...]
-      currentCustomer: {}, //user.id
-      customerList: [{ "Customer 1": 1 }, { "Customer 2": 2 }],
-      currentMessage: "" //input field
+      chatHistory: [],
+      customerList: [
+        { name: "Customer 1", chat: "hello" },
+        { name: "Customer 2", chat: "hihihi" },
+        { name: "Customer 3", chat: "sup" },
+        { name: "Customer 4", chat: "yellow" }
+      ],
+      currentMessage: ""
     };
-    this.sendMsg = this.sendMsg.bind(this);
-    this.updateState = this.updateState.bind(this);
 
     this.tRep = new TalkoClientRep(this.updateState);
   }
@@ -32,7 +46,91 @@ class UserList extends Component {
     });
   }
 
-  sendMsg() {
+  createTab = (customer, chat) => {
+    const { tabs } = this.state;
+
+    //
+    for (let i = 0; i < tabs.length; i++) {
+      if (customer === tabs[i]) {
+        return;
+      }
+    }
+
+    this.setState({
+      tabs: [...this.state.tabs, customer]
+    });
+
+    //clears the chat history each time a tab is created then runs a callback
+    this.setState(
+      {
+        chatHistory: []
+      },
+      //moves the customers chat history into the array in state
+      () => {
+        this.setState({
+          chatHistory: [...this.state.chatHistory, chat]
+        });
+      }
+    );
+  };
+
+  closeTab = customer => {
+    //references the chat history for the next tab after one is closed
+    let nextCustomer;
+    //stores the index of the next customer to be used later
+    let nextCustomerIndex = this.state.tabs.findIndex(
+      cust => customer === cust
+    );
+    //filters out the tab that was clicked and leaves the open tabs
+    let openTabs = this.state.tabs.filter(cust => cust !== customer);
+
+    this.setState(
+      {
+        tabs: openTabs
+      },
+      () => {
+        if (this.state.tabs[nextCustomerIndex]) {
+          nextCustomer = this.state.tabs[nextCustomerIndex];
+        } else {
+          nextCustomer = this.state.tabs[nextCustomerIndex - 1];
+        }
+
+        var currentChatHistory = this.state.customerList.find(
+          cust => cust.name === nextCustomer
+        );
+
+        if (currentChatHistory) {
+          this.setState({
+            chatHistory: [currentChatHistory.chat]
+          });
+        } else {
+          this.setState({
+            chatHistory: []
+          });
+        }
+      }
+    );
+  };
+
+  //Sets the chat history for the selected customer
+  setChatHistory = name => {
+    let cust = this.state.customerList.filter(customer => {
+      return customer.name === name;
+    });
+
+    this.setState(
+      {
+        chatHistory: []
+      },
+      () => {
+        this.setState({
+          chatHistory: [...this.state.chatHistory, cust[0].chat]
+        });
+      }
+    );
+  };
+
+  sendMessage() {
     this.tRep.sendMessage(
       Object.values(this.state.currentCustomer),
       new Message(
@@ -45,11 +143,12 @@ class UserList extends Component {
     );
   }
 
-  createTab = customer => {
-    this.setState((this.state.currentCustomer = customer));
-    console.log(Object.values(this.state.currentCustomer));
-    this.setState({ tabs: [...this.state.tabs, Object.keys(customer)] });
+  pressedEnter = event => {
+    if (event.key === "Enter") {
+      this.sendMessage();
+    }
   };
+
   acceptCustomer = () => {
     let newC = {};
     newC = this.tRep.offerAccept();
@@ -59,57 +158,60 @@ class UserList extends Component {
   };
 
   render() {
-    var chatHistory = (
-      <div>
-        {this.state.chatHistory[Object.values(this.state.currentCustomer)]}
-      </div>
-    );
-    // let chatHistory = this.state.chatHistory.map((history, index) => {
+    let chatHistory = this.state.chatHistory.map((history, index) => {
+      return <div key={index}>{history}</div>;
+    });
 
     let selectTabs = this.state.tabs.map((tab, index) => {
       return (
-        <div
-          key={index}
-          style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            border: "solid 2px black"
-          }}
-        >
-          {tab}
-        </div>
+        <Tab key={index}>
+          <div
+            onClick={() => this.closeTab(tab)}
+            style={{ border: "solid 2px black" }}
+          >
+            X
+          </div>
+          <div onClick={() => this.setChatHistory(tab)}>{tab}</div>
+        </Tab>
       );
     });
-    // for (let customer in this.state.customerList) {
-    var roster = this.state.customerList.map((customer, index) => {
+
+    let roster = this.state.customerList.map((customer, index) => {
       return (
-        <User key={index} onClick={() => this.createTab(customer)}>
-          {"Status: " + Object.keys(customer)}
+        <User
+          key={index}
+          onClick={() => this.createTab(customer.name, customer.chat)}
+        >
+          <Status />
+          {customer.name}
         </User>
       );
     });
+
     return (
-      <div>
+      <div style={{ display: "flex" }}>
         <UserListWindow>
           <Header>
-            <div style={{ fontSize: "10px", paddingLeft: "10px" }}>
+            <div style={{ fontSize: "15px", color: "white" }}>
               <h1>Customers</h1>
             </div>
           </Header>
           <UsersList>{roster}</UsersList>
           <button onClick={this.acceptCustomer}>Accept</button>
         </UserListWindow>
-        <div>{selectTabs}</div>
-        <div>{chatHistory}</div>
-        <div>
-          <input
-            onChange={e => {
-              this.setState({ currentMessage: e.target.value });
-            }}
-          />
-          <button onClick={this.sendMsg}>Send</button>
-        </div>
+        <UserMessagesWindow>
+          <div>
+            <TabWindow>{selectTabs}</TabWindow>
+            <ChatContentWindow>{chatHistory}</ChatContentWindow>
+          </div>
+          <ReplyInputWindow>
+            <ReplyInput
+              onKeyPress={this.pressedEnter}
+              onChange={e => this.setState({ currentMessage: e.target.value })}
+            />
+            <button onClick={this.sendMessage}>Send</button>
+          </ReplyInputWindow>
+        </UserMessagesWindow>
       </div>
     );
   }
