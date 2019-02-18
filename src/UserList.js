@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import TalkoClientRep from "./client/TalkoClientRep";
 import {
   UserListWindow,
   Header,
@@ -23,14 +24,15 @@ class UserList extends Component {
         { name: "Customer 2", chat: "hihihi" },
         { name: "Customer 3", chat: "sup" },
         { name: "Customer 4", chat: "yellow" }
-      ]
+      ],
+      currentMessage: ""
     };
 
-    // this.tRep = new TalkoClientRep(this.updateState);
+    this.tRep = new TalkoClientRep(this.updateState);
   }
 
   componentDidMount() {
-    // this.tRep.startOfferConnection();
+    this.tRep.startOfferConnection();
   }
 
   updateState(m, id) {
@@ -124,9 +126,18 @@ class UserList extends Component {
     );
   };
 
-  sendMessage = () => {
-    console.log("message sent");
-  };
+  sendMessage() {
+    this.tRep.sendMessage(
+      Object.values(this.state.currentCustomer),
+      new Message(
+        new Date().toUTCString(),
+        0,
+        null,
+        null,
+        this.state.currentMessage
+      )
+    );
+  }
 
   pressedEnter = event => {
     if (event.key === "Enter") {
@@ -190,7 +201,10 @@ class UserList extends Component {
             <ChatContentWindow>{chatHistory}</ChatContentWindow>
           </div>
           <ReplyInputWindow>
-            <ReplyInput onKeyPress={this.pressedEnter} />
+            <ReplyInput
+              onKeyPress={this.pressedEnter}
+              onChange={e => this.setState({ currentMessage: e.target.value })}
+            />
             <button onClick={this.sendMessage}>Send</button>
           </ReplyInputWindow>
         </UserMessagesWindow>
