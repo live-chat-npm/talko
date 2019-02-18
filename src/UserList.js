@@ -26,11 +26,11 @@ class UserList extends Component {
       ]
     };
 
-    this.tRep = new TalkoClientRep(this.updateState);
+    // this.tRep = new TalkoClientRep(this.updateState);
   }
 
   componentDidMount() {
-    this.tRep.startOfferConnection();
+    // this.tRep.startOfferConnection();
   }
 
   updateState(m, id) {
@@ -45,6 +45,7 @@ class UserList extends Component {
   createTab = (customer, chat) => {
     const { tabs } = this.state;
 
+    //
     for (let i = 0; i < tabs.length; i++) {
       if (customer === tabs[i]) {
         return;
@@ -70,7 +71,9 @@ class UserList extends Component {
   };
 
   closeTab = customer => {
+    //references the chat history for the next tab after one is closed
     let nextCustomer;
+    //stores the index of the next customer to be used later
     let nextCustomerIndex = this.state.tabs.findIndex(
       cust => customer === cust
     );

@@ -3,7 +3,7 @@ import { ThemeProvider } from "styled-components";
 import logo from "./images/logo.jpg";
 import sendButtonBlack from "./images/send-button-black.png";
 import sendButtonWhite from "./images/send-button-white.png";
-import TalkoClient from "./Client/TalkoClient";
+import TalkoClient from "./client/TalkoClient";
 import {
   ChatWindow,
   InputWindow,
