@@ -1,25 +1,27 @@
-import * as io from "socket.io-client";
-import Message from "./Message";
+import io from "socket.io-client";
+import Message from "./Messages/Message";
 import SessionHandler from "./SessionHandler";
 require("dotenv").config();
 
+//2D ARRAY OF CUSTOMER ROOMS AND MSGS
+
 // SERVER connection object
 var offerSocket;
-var offerCustId;
+var offerCustId = 1;
+var offerCustName = "Customer 1";
 var custSockets = {};
 var port = process.env.CLIENT_PORT || 5050;
 
 /**
- * @class [TalkoClient] :toolkit for talko client
+ * @class [TalkoClientRep] :toolkit for talko client
  */
-export default class TalkoClient {
+export default class TalkoClientRep {
   /**
    * @function constructor :setup components message state setter and session for rep client
-   * @param {SessionHandler} session
    * @param {callback} upState
    */
-  constructor(session, upState) {
-    this.session = session;
+  constructor(upState) {
+    this.session = new SessionHandler();
     this.upState = upState;
   }
 
@@ -37,8 +39,8 @@ export default class TalkoClient {
 
     // Receive greeting (msg.content <string>) from SERVER
     offerSocket.on("greeting", message => {
-      let incGreetingMsg = Message(null, 0, "-=SERVER=-", null, message);
-      this.upState(incGreetingMsg);
+      let incGreetingMsg = (null, 0, "-=SERVER=-", null, message);
+      // this.upState(incGreetingMsg);
       // Outgoing Message Identifying as Customer
       let outIdentifyMsg = Message(
         new Date().toUTCString(),
@@ -53,7 +55,9 @@ export default class TalkoClient {
     offerSocket.on("offer", message => {
       if (offerCustId == null) {
         offerCustId = message.from.id;
-        this.upState(message);
+        offerCustName = message.from.name;
+        // this.upState(message);
+        //PASS ALERT UP TO COMPONENT AND FROM COMPONENT UP TO CLIENT LIST COMPONENT
       } else {
         let outOfferBusyMsg = Message(
           new Date().toUTCString(),
@@ -73,17 +77,16 @@ export default class TalkoClient {
 
     // Receive msg from SERVER
     offerSocket.on("send_message", message => {
-      this.session.handleMessageReceived(this.upState, message);
+      this.session.handleMessageReceived(this.upState, message, 0);
     });
   }
 
   /**
    * @function sendMessage :sends message object to server.
-   * @param {Message} message
    * @param {id} id :id of desired customer for msg
+   * @param {Message} message
    */
-  sendMessage(message, id) {
-    message.from.name = "(React) Rep";
+  sendMessage(id, message) {
     this.session.handleMessageSend(custSockets[id], message);
   }
 
@@ -100,10 +103,18 @@ export default class TalkoClient {
     );
     offerSocket.emit("offer_accept", outOfferAcceptMsg);
     //add new Socket connection to custSockets by custID
-    custSockets = { ...custSockets, offerCustId: io(":" + port) };
+    // let newCustSock = {};
+    // newCustSock[offerCustId] = io(":" + port);
+    custSockets[offerCustId] = io(":" + port);
     //init listeners for new customer connection
-    this.startCustConnection(custSockets.offerCustId, offerCustId);
-    offerCustId = null;
+    this.startCustConnection(custSockets[offerCustId], offerCustId);
+
+    let ocid = offerCustId;
+    let ocn = offerCustName;
+    let obj = {};
+    obj[ocn] = ocid;
+
+    return obj;
   }
 
   /**
@@ -112,6 +123,11 @@ export default class TalkoClient {
    * @param {*} reqCustomer
    */
   startCustConnection(custSocket, reqCustomer) {
+    let cid = offerCustId;
+    offerCustId = null;
+    let n = offerCustName;
+    offerCustName = null;
+
     // Connect to SERVER acknowledgement
     custSocket.on("connect", () => {
       this.session.handleConnection();
@@ -120,7 +136,7 @@ export default class TalkoClient {
     // Receive greeting (msg.content <string>) from SERVER
     custSocket.on("greeting", message => {
       let incGreetingMsg = Message(null, 0, "-=SERVER=-", null, message);
-      this.upState(incGreetingMsg);
+      // this.upState(incGreetingMsg);
       // Outgoing Message requesting customer by id
       let outIdentifyMsg = Message(
         new Date().toUTCString(),
@@ -139,7 +155,7 @@ export default class TalkoClient {
 
     // Receive msg from CUSTOMER by way of SERVER
     custSocket.on("send_message", message => {
-      this.session.handleMessageReceived(this.upState, message);
+      this.session.handleMessageReceived(this.upState, message, cid);
     });
   }
 }

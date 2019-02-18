@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import Chat from "./Chat";
-import UserList from "./UserList"
+import UserList from "./UserList";
 import userImage from "./images/user-image.jpg";
 
 class App extends Component {
@@ -20,7 +20,7 @@ class App extends Component {
             headerTitle="Live Chat"
           />
         </div>
-        <UserList/>
+        <UserList />
       </div>
     );
   }
