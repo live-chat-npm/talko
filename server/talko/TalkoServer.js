@@ -38,7 +38,15 @@ class TalkoServer {
     );
 
     io.on("connection", socket => {
-      this.session.handleConnection(socket, this.defaultGreeting);
+      this.session.handleConnection(socket);
+
+      socket.on("customer", name => {
+        this.session.handleCustomer(socket, name);
+      });
+
+      socket.on("join", room => {
+        this.session.handleRoomJoin(socket, room, defaultGreeting);
+      });
 
       socket.on("send_message", msg =>
         this.session.handleMessageSend(socket, msg)
@@ -55,6 +63,15 @@ class TalkoServer {
    */
   getApp() {
     return app;
+  }
+
+  /**
+   * Gets the uninvoked express instance
+   * 
+   * @returns {express} the uninvoked express instnace
+   */
+  getExpress() {
+    return express;
   }
 }
 

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { UserListWindow, Header, UsersList, User } from "./ChatComponents";
-import TalkoClientRep from "./Client/TalkoClientRep";
-import Message from "./Client/Messages/Message";
+import TalkoClientRep from "./client/TalkoClientRep";
+import Message from "./client/Messages/Message";
 
 class UserList extends Component {
   constructor() {
