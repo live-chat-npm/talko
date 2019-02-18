@@ -1,8 +1,3 @@
-/**
- * A session handler skeleton for handling a socket session in the talko server
- *
- * @author Thomas Papp
- */
 export default class TalkoSession {
   /**
    * Constructs a new talko session. Does not allow direct instances, you must extend off this class.
@@ -32,13 +27,14 @@ export default class TalkoSession {
    * @param {object} msg - The message object
    */
   handleMessageSend(socket, msg) {
-    const message = { ...msg };
-    message.from.id = socket.id;
-    socket.emit("send_message", message);
+    // const message = { ...msg };
+    msg.from.name = "(React) Rep";
+    msg.from.id = socket.id;
+    socket.emit("send_message", msg);
   }
 
-  handleMessageReceived(callback, msg) {
-    callback(msg);
+  handleMessageReceived(callback, msg, id) {
+    callback(msg, id);
   }
 
   /**
