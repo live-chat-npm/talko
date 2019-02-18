@@ -283,3 +283,10 @@ export const ReplyInput = styled.input`
   width: 100%;
   height: 5vh;
 `;
+
+// Styled componets for contact form
+export const Form = styled.form`
+  background: ${props => props.theme.background};
+  border-radius: 4px;
+  color: ${props => props.theme.color};
+`;
