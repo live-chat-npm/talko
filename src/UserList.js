@@ -25,6 +25,21 @@ class UserList extends Component {
         { name: "Customer 4", chat: "yellow" }
       ]
     };
+
+    this.tRep = new TalkoClientRep(this.updateState);
+  }
+
+  componentDidMount() {
+    this.tRep.startOfferConnection();
+  }
+
+  updateState(m, id) {
+    let newMsg = {};
+    // let idd = id;
+    newMsg[id] = { ...this.state.chatHistory[id], m };
+    this.setState({
+      chatHistory: { ...this.state.chatHistory, newMsg }
+    });
   }
 
   createTab = (customer, chat) => {
@@ -117,7 +132,12 @@ class UserList extends Component {
   };
 
   acceptCustomer = () => {
-    //Accepts the customer.
+    let newCustomer = {};
+    newCustomer = this.tRep.offerAccept();
+
+    this.setState({
+      customerList: { ...this.state.customerList, newCustomer }
+    });
   };
 
   render() {
@@ -168,7 +188,7 @@ class UserList extends Component {
           </div>
           <ReplyInputWindow>
             <ReplyInput onKeyPress={this.pressedEnter} />
-            <button>Send</button>
+            <button onClick={this.sendMessage}>Send</button>
           </ReplyInputWindow>
         </UserMessagesWindow>
       </div>
