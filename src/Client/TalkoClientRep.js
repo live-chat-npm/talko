@@ -109,10 +109,8 @@ export default class TalkoClientRep {
     //init listeners for new customer connection
     this.startCustConnection(custSockets[offerCustId], offerCustId);
 
-    let ocid = offerCustId;
-    let ocn = offerCustName;
     let obj = {};
-    obj[ocn] = ocid;
+    obj[offerCustName] = offerCustId;
 
     return obj;
   }
