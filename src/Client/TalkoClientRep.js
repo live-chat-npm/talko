@@ -7,8 +7,6 @@ require("dotenv").config();
 
 // SERVER connection object
 var offerSocket;
-var offerCustId = 1;
-var offerCustName = "Customer 1";
 var custSockets = {};
 var port = process.env.CLIENT_PORT || 5050;
 
@@ -23,50 +21,54 @@ export default class TalkoClientRep {
   constructor(upState) {
     this.session = new SessionHandler();
     this.upState = upState;
+    this.name = "(React) Rep";
+    this.myID = "";
+    this.offerCustId = null;
+    this.offerCustName = null;
   }
 
   /**
    * @function startOfferConnection :initializes necessary socket and listeners
    */
-  startOfferConnection() {
+  startOfferConnection(newOffer) {
     // Connect to SERVER on specified port
     offerSocket = io(":" + port);
 
+    // this.upState()
     // Connect to SERVER acknowledgement
     offerSocket.on("connect", () => {
       this.session.handleConnection();
-    });
-
-    // Receive greeting (msg.content <string>) from SERVER
-    offerSocket.on("greeting", message => {
-      let incGreetingMsg = (null, 0, "-=SERVER=-", null, message);
-      // this.upState(incGreetingMsg);
-      // Outgoing Message Identifying as Customer
-      let outIdentifyMsg = Message(
-        new Date().toUTCString(),
+      //
+      let outIdentifyMsg = new Message();
+      outIdentifyMsg.newMessage(
+        "support",
         offerSocket.id,
-        "(React) Customer",
-        null,
-        "Representative"
+        this.name,
+        "representative"
       );
       offerSocket.emit("identify", outIdentifyMsg);
     });
 
     offerSocket.on("offer", message => {
-      if (offerCustId == null) {
-        offerCustId = message.from.id;
-        offerCustName = message.from.name;
+      console.log(message);
+      if (this.offerCustId == null) {
+        this.offerCustId = message.data.from.id;
+        this.offerCustName = message.data.from.name;
+        // this.upState(message, 0);
+        console.log("offer: " + this.offerCustName);
+        newOffer(this.offerCustName);
         // this.upState(message);
         //PASS ALERT UP TO COMPONENT AND FROM COMPONENT UP TO CLIENT LIST COMPONENT
       } else {
-        let outOfferBusyMsg = Message(
-          new Date().toUTCString(),
+        let outOfferBusyMsg = new Message();
+        outOfferBusyMsg.newMessage(
+          "support",
           offerSocket.id,
           "(React) Rep",
-          null,
-          offerCustId
+          this.offerCustId
         );
         offerSocket.emit("offer_busy", outOfferBusyMsg);
+        console.log("offer busy :[");
       }
     });
 
@@ -77,7 +79,7 @@ export default class TalkoClientRep {
 
     // Receive msg from SERVER
     offerSocket.on("send_message", message => {
-      this.session.handleMessageReceived(this.upState, message, 0);
+      this.session.handleMessageReceived(this.upState, message);
     });
   }
 
@@ -86,7 +88,9 @@ export default class TalkoClientRep {
    * @param {id} id :id of desired customer for msg
    * @param {Message} message
    */
-  sendMessage(id, message) {
+  sendMessage(id, content) {
+    let message = new Message();
+    message.newMessage("support", custSockets[id].id, this.name, content);
     this.session.handleMessageSend(custSockets[id], message);
   }
 
@@ -94,23 +98,25 @@ export default class TalkoClientRep {
    * @function offerAccept :sends message on "offer" socket to accept offered customer
    */
   offerAccept() {
-    let outOfferAcceptMsg = Message(
-      new Date().toUTCString(),
-      offerSocket.id,
-      "(React) Rep",
-      null,
-      offerCustId
-    );
-    offerSocket.emit("offer_accept", outOfferAcceptMsg);
-    //add new Socket connection to custSockets by custID
+    // let outOfferAcceptMsg = Message(
+    //   "support",
+    //   offerSocket.id,
+    //   this.name,
+    //   offerCustId
+    // );
+    // offerSocket.emit("offer_accept", outOfferAcceptMsg);
+    // //add new Socket connection to custSockets by custID
     // let newCustSock = {};
     // newCustSock[offerCustId] = io(":" + port);
-    custSockets[offerCustId] = io(":" + port);
-    //init listeners for new customer connection
-    this.startCustConnection(custSockets[offerCustId], offerCustId);
-
+    custSockets[this.offerCustId] = io(":" + port);
     let obj = {};
-    obj[offerCustName] = offerCustId;
+    obj["name"] = this.offerCustName;
+    obj["id"] = this.offerCustId;
+
+    // console.log(this.offerCustId);
+
+    //init listeners for new customer connection
+    this.startCustConnection(custSockets[this.offerCustId], this.offerCustId);
 
     return obj;
   }
@@ -121,29 +127,15 @@ export default class TalkoClientRep {
    * @param {*} reqCustomer
    */
   startCustConnection(custSocket, reqCustomer) {
-    let cid = offerCustId;
-    offerCustId = null;
-    let n = offerCustName;
-    offerCustName = null;
+    let cid = this.offerCustId;
+    this.offerCustId = null;
+    let n = this.offerCustName;
+    this.offerCustName = null;
+    console.log("cust name: " + n);
 
     // Connect to SERVER acknowledgement
     custSocket.on("connect", () => {
       this.session.handleConnection();
-    });
-
-    // Receive greeting (msg.content <string>) from SERVER
-    custSocket.on("greeting", message => {
-      let incGreetingMsg = Message(null, 0, "-=SERVER=-", null, message);
-      // this.upState(incGreetingMsg);
-      // Outgoing Message requesting customer by id
-      let outIdentifyMsg = Message(
-        new Date().toUTCString(),
-        custSocket.id,
-        "(React) Customer",
-        null,
-        reqCustomer
-      );
-      custSocket.emit("identify", outIdentifyMsg);
     });
 
     // Perform disconnection from CUSTOMER through SERVER connection
@@ -153,7 +145,7 @@ export default class TalkoClientRep {
 
     // Receive msg from CUSTOMER by way of SERVER
     custSocket.on("send_message", message => {
-      this.session.handleMessageReceived(this.upState, message, cid);
+      this.session.handleMessageReceived(this.upState, message);
     });
   }
 }

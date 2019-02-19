@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import TalkoClientRep from "./client/TalkoClientRep";
-import Message from "./client/Messages/Message";
+import TalkoClientRep from "./Client/TalkoClientRep";
+import Message from "./Client/Messages/Message";
 import {
   UserListWindow,
   Header,
@@ -14,36 +14,52 @@ import {
   ReplyInput,
   Status
 } from "./ChatComponents";
+import { json } from "body-parser";
 
 class UserList extends Component {
   constructor() {
     super();
+    this.firstMsg = new Message();
+    this.firstMsg.newMessage("support", 1, "SERVER", "HI!");
     this.state = {
       tabs: [],
       chatHistory: [],
       customerList: [
-        { name: "Customer 1", chat: "hello" },
-        { name: "Customer 2", chat: "hihihi" },
-        { name: "Customer 3", chat: "sup" },
-        { name: "Customer 4", chat: "yellow" }
+        { name: "Customer 1", id: "1", chat: [this.firstMsg] },
+        { name: "Customer 2", id: "2", chat: [this.firstMsg] },
+        { name: "Customer 3", id: "3", chat: [this.firstMsg] },
+        { name: "Customer 4", id: "4", chat: [this.firstMsg] }
       ],
-      currentMessage: ""
+      currentMessage: "",
+      currentOffer: ""
     };
-
-    this.tRep = new TalkoClientRep(this.updateState);
+    this.updateState = this.updateState.bind(this);
   }
 
   componentDidMount() {
-    this.tRep.startOfferConnection();
+    this.tRep = new TalkoClientRep(this.updateState);
+    this.tRep.startOfferConnection(this.newOffer);
   }
 
   updateState(m, id) {
-    let newMsg = {};
-    // let idd = id;
-    newMsg[id] = { ...this.state.chatHistory[id], m };
-    this.setState({
-      chatHistory: { ...this.state.chatHistory, newMsg }
+    // let newMsg = {};
+    let stateCopy = Object.assign([], this.state.customerList);
+    // let stateCopy = this.state.customerList;
+    let cust = stateCopy.filter(customer => {
+      // return customer.id === id;
+      return customer.id == m.data.from.id;
     });
+    // let idc = this.state.customerList.findIndex(elm => {
+    //   return elm["id"] == id;
+    // });
+    if (cust[0] != undefined) {
+      console.log(cust[0].id);
+      console.log(this.state.customerList); //(cust.id + ", " + id);
+      console.log(m);
+      let newMsg = [...this.state.customerList[cust[0].id]["chat"], m];
+      stateCopy[cust[0].id].chat = newMsg;
+      this.setState({ customerList: stateCopy });
+    }
   }
 
   createTab = (customer, chat) => {
@@ -118,29 +134,31 @@ class UserList extends Component {
       return customer.name === name;
     });
 
+    // console.log("customer: " + cust);
+    // let currentCust = this.state.customerList.findIndex(
+
     this.setState(
       {
-        chatHistory: []
-      },
-      () => {
-        this.setState({
-          chatHistory: [...this.state.chatHistory, cust[0].chat]
-        });
+        chatHistory: [cust[0]]
       }
+      // () => {
+      //   this.setState({
+      //     chatHistory: [...this.state.chatHistory, cust[0]]
+      //   });
+      // }
     );
+    // console.log(this.state.chatHistory[0]);
   };
 
   sendMessage() {
+    let msg = new Message();
+    console.log("SENDING ATTEMPT");
+    console.log(this.state.chatHistory[0].id);
     this.tRep.sendMessage(
-      Object.values(this.state.currentCustomer),
-      new Message(
-        new Date().toUTCString(),
-        0,
-        null,
-        null,
-        this.state.currentMessage
-      )
+      this.state.chatHistory[0].id,
+      this.state.currentMessage
     );
+    console.log(msg);
   }
 
   pressedEnter = event => {
@@ -149,18 +167,35 @@ class UserList extends Component {
     }
   };
 
+  newOffer = name => {
+    this.setState({ currentOffer: name });
+  };
+
   acceptCustomer = () => {
+    this.setState({ currentOffer: null });
+
     let newC = {};
     newC = this.tRep.offerAccept();
+    newC = { ...newC, chat: [this.firstMsg] };
     // let newCID = this.tRep.offerAccept();
     // let newCList = Object.assign({}, this.tRep.offerAccept());
-    this.setState({ customerList: { ...this.state.customerList, newC } });
+    let stateCopy = this.state.customerList; //.map((copy)=>{true})
+    // Object.assign([], this.state.customerList);
+    stateCopy.push(newC);
+    console.log(stateCopy);
+    this.setState({ customerList: stateCopy });
+    console.log(this.state.customerList);
+    // this.setState({ customerList: { ...this.state.customerList, newC } });
   };
 
   render() {
-    let chatHistory = this.state.chatHistory.map((history, index) => {
-      return <div key={index}>{history}</div>;
-    });
+    let chatHistory;
+    console.log(this.state.chatHistory[0]);
+    if (this.state.chatHistory.length != 0) {
+      chatHistory = this.state.chatHistory[0].chat.map((msg, index) => {
+        return <div key={index}>{msg.data.content}</div>;
+      });
+    }
 
     let selectTabs = this.state.tabs.map((tab, index) => {
       return (
@@ -176,11 +211,17 @@ class UserList extends Component {
       );
     });
 
+    // new inc customer offer
+    let offerCustomer = this.state.currentOffer;
+
     let roster = this.state.customerList.map((customer, index) => {
       return (
         <User
           key={index}
-          onClick={() => this.createTab(customer.name, customer.chat)}
+          onClick={() => {
+            this.createTab(customer.name, customer.chat);
+            this.setChatHistory(customer.name);
+          }}
         >
           <Status />
           {customer.name}
@@ -197,6 +238,7 @@ class UserList extends Component {
             </div>
           </Header>
           <UsersList>{roster}</UsersList>
+          <div>{offerCustomer}</div>
           <button onClick={this.acceptCustomer}>Accept</button>
         </UserListWindow>
         <UserMessagesWindow>

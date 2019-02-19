@@ -21,31 +21,25 @@ export default class TalkoClient {
   constructor(upState) {
     this.session = new SessionHandler();
     this.upState = upState;
+    this.name = "(React) Customer";
   }
   /**
    * @function start :initializes necessary socket and listeners
    */
-  start(upState) {
+  start() {
     // Connect to SERVER on specified port
     socket = io(":" + port);
 
     // Connect to SERVER acknowledgement
     socket.on("connect", () => {
       this.session.handleConnection();
-    });
 
-    // Receive greeting (msg.content <string>) from SERVER
-    socket.on("greeting", message => {
-      let incGreetingMsg = Message(null, 0, "-=SERVER=-", null, message);
-      this.upState(incGreetingMsg);
+      // let incGreetingMsg = Message(null, 0, "-=SERVER=-", null, message);
+      // this.upState(incGreetingMsg);
+
       // Outgoing Message Identifying as Customer
-      let outIdentifyMsg = Message(
-        new Date().toUTCString(),
-        socket.id,
-        "(React) Customer",
-        null,
-        "Customer"
-      );
+      let outIdentifyMsg = new Message();
+      outIdentifyMsg.newMessage("support", socket.id, this.name, "customer");
       socket.emit("identify", outIdentifyMsg);
     });
 
@@ -68,8 +62,10 @@ export default class TalkoClient {
    * @function sendMessage :sends message object to server.
    * @param {message{from:{id:number, avatar:string, name:string}, content:string} message
    */
-  sendMessage(message) {
-    message.from.name = "(React) Customer";
+  sendMessage(content) {
+    let message = new Message();
+    message.newMessage(null, socket.id, this.name, content);
     this.session.handleMessageSend(socket, message);
+    this.upState(message);
   }
 }

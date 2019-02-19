@@ -28,13 +28,13 @@ export default class TalkoSession {
    */
   handleMessageSend(socket, msg) {
     // const message = { ...msg };
-    msg.from.name = "(React) Rep";
-    msg.from.id = socket.id;
+    // msg.from.name = "(React) Rep";
+    // msg.from.id = socket.id;
     socket.emit("send_message", msg);
   }
 
-  handleMessageReceived(callback, msg, id) {
-    callback(msg, id);
+  handleMessageReceived(callback, msg) {
+    callback(msg, msg.data.from.id);
   }
 
   /**
