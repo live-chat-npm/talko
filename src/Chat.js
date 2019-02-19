@@ -3,7 +3,7 @@ import { ThemeProvider } from "styled-components";
 import logo from "./images/logo.jpg";
 import sendButtonBlack from "./images/send-button-black.png";
 import sendButtonWhite from "./images/send-button-white.png";
-import TalkoClient from "./Client/TalkoClient";
+import TalkoClient from "./client/TalkoClient";
 import {
   ChatWindow,
   InputWindow,
@@ -24,6 +24,7 @@ import {
   Footer,
   Credit
 } from "./ChatComponents";
+import ContactForm from "./ContactForm";
 
 export default class Chat extends Component {
   constructor() {
@@ -32,7 +33,8 @@ export default class Chat extends Component {
     this.state = {
       messages: [],
       input: "",
-      minimized: true //Default position for chat window
+      minimized: true, //Default position for chat window,
+      contactForm: true
     };
     this.updateState = this.updateState.bind(this);
 
@@ -150,6 +152,8 @@ export default class Chat extends Component {
       );
     });
 
+    console.log(this.props);
+
     return (
       <ThemeProvider theme={theme}>
         {this.state.minimized ? (
@@ -174,29 +178,38 @@ export default class Chat extends Component {
                 &or;
               </MinimizeButton>
             </Header>
-            <Profile>
-              <ProfileImage src={this.props.profileImage} />
-              <div>
-                <Name>{this.props.name}</Name>
-                <Title>{this.props.title}</Title>
-              </div>
-              <Logo src={logo} />
-            </Profile>
-            <MessageWindow>
-              {dispMessages} <div ref={this.newMessage} />
-            </MessageWindow>
-            <InputWindow>
-              <Input
-                onChange={this.handleInput}
-                value={this.state.input}
-                placeholder="Type in your message here..."
-                onKeyPress={this.pressedEnter}
-              />
-              <SendButton src={theme.sendButton} onClick={this.sendMessage} />
-            </InputWindow>
-            <Footer>
-              <Credit>Powered by Talko.io</Credit>
-            </Footer>
+            {this.state.contactForm ? (
+              <ContactForm />
+            ) : (
+              <>
+                <Profile>
+                  <ProfileImage src={this.props.profileImage} />
+                  <div>
+                    <Name>{this.props.name}</Name>
+                    <Title>{this.props.title}</Title>
+                  </div>
+                  <Logo src={logo} />
+                </Profile>
+                <MessageWindow>
+                  {dispMessages} <div ref={this.newMessage} />
+                </MessageWindow>
+                <InputWindow>
+                  <Input
+                    onChange={this.handleInput}
+                    value={this.state.input}
+                    placeholder="Type in your message here..."
+                    onKeyPress={this.pressedEnter}
+                  />
+                  <SendButton
+                    src={theme.sendButton}
+                    onClick={this.sendMessage}
+                  />
+                </InputWindow>
+                <Footer>
+                  <Credit>Powered by Talko.io</Credit>
+                </Footer>
+              </>
+            )}
           </ChatWindow>
         )}
       </ThemeProvider>
