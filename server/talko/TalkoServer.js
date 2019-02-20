@@ -48,16 +48,20 @@ class TalkoServer {
         this.session.handleIdentity(socket, message);
       });
 
-      // socket.on("offer_accept", message => {
-      //   this.session.handleOffer(socket, message);
-      // });
+      socket.on("offer_accept", message => {
+        this.session.handleOfferAccept(socket, message);
+      });
+
+      socket.on("next_waiting", repName => {
+        this.session.handleWaitingList(socket, repName);
+      });
 
       socket.on("join", room => {
         this.session.handleRoomJoin(socket, room, defaultGreeting);
       });
 
-      socket.on("send_message", msg =>
-        this.session.handleMessageSend(socket, msg)
+      socket.on("send_message", message =>
+        this.session.handleMessageSend(socket, message)
       );
 
       socket.on("disconnect", () => this.session.handleDisconnection());

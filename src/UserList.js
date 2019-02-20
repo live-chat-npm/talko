@@ -34,30 +34,27 @@ class UserList extends Component {
       currentOffer: ""
     };
     this.updateState = this.updateState.bind(this);
+    this.tRep = new TalkoClientRep(this.updateState);
   }
 
   componentDidMount() {
-    this.tRep = new TalkoClientRep(this.updateState);
     this.tRep.startOfferConnection(this.newOffer);
   }
 
-  updateState(m, id) {
-    // let newMsg = {};
+  updateState(m, local) {
     let stateCopy = Object.assign([], this.state.customerList);
-    // let stateCopy = this.state.customerList;
     let cust = stateCopy.filter(customer => {
-      // return customer.id === id;
-      return customer.id == m.data.from.id;
+      return customer.id == local; //m.data.from.id;
     });
-    // let idc = this.state.customerList.findIndex(elm => {
-    //   return elm["id"] == id;
-    // });
+
     if (cust[0] != undefined) {
-      console.log(cust[0].id);
+      let cPos = stateCopy.indexOf(cust[0]);
+      cust = cust[0].id;
+      console.log(cPos);
       console.log(this.state.customerList); //(cust.id + ", " + id);
-      console.log(m);
-      let newMsg = [...this.state.customerList[cust[0].id]["chat"], m];
-      stateCopy[cust[0].id].chat = newMsg;
+      console.log(this.state.customerList[cPos].chat);
+      let newMsg = [...this.state.customerList[cPos].chat, m];
+      stateCopy[cPos].chat = newMsg;
       this.setState({ customerList: stateCopy });
     }
   }
@@ -117,7 +114,7 @@ class UserList extends Component {
 
         if (currentChatHistory) {
           this.setState({
-            chatHistory: [currentChatHistory.chat]
+            chatHistory: [currentChatHistory]
           });
         } else {
           this.setState({
@@ -133,32 +130,18 @@ class UserList extends Component {
     let cust = this.state.customerList.filter(customer => {
       return customer.name === name;
     });
-
-    // console.log("customer: " + cust);
-    // let currentCust = this.state.customerList.findIndex(
-
-    this.setState(
-      {
-        chatHistory: [cust[0]]
-      }
-      // () => {
-      //   this.setState({
-      //     chatHistory: [...this.state.chatHistory, cust[0]]
-      //   });
-      // }
-    );
-    // console.log(this.state.chatHistory[0]);
+    this.setState({
+      chatHistory: [cust[0]]
+    });
   };
 
   sendMessage() {
-    let msg = new Message();
     console.log("SENDING ATTEMPT");
     console.log(this.state.chatHistory[0].id);
     this.tRep.sendMessage(
       this.state.chatHistory[0].id,
       this.state.currentMessage
     );
-    console.log(msg);
   }
 
   pressedEnter = event => {
@@ -172,28 +155,35 @@ class UserList extends Component {
   };
 
   acceptCustomer = () => {
-    this.setState({ currentOffer: null });
-
-    let newC = {};
-    newC = this.tRep.offerAccept();
-    newC = { ...newC, chat: [this.firstMsg] };
-    // let newCID = this.tRep.offerAccept();
-    // let newCList = Object.assign({}, this.tRep.offerAccept());
-    let stateCopy = this.state.customerList; //.map((copy)=>{true})
-    // Object.assign([], this.state.customerList);
-    stateCopy.push(newC);
-    console.log(stateCopy);
-    this.setState({ customerList: stateCopy });
-    console.log(this.state.customerList);
-    // this.setState({ customerList: { ...this.state.customerList, newC } });
+    if (this.state.currentOffer) {
+      let newC = {};
+      newC = this.tRep.offerAccept();
+      newC = { ...newC, chat: [this.firstMsg] };
+      let stateCopy = this.state.customerList; //.map((copy)=>{true})
+      stateCopy.push(newC);
+      console.log(stateCopy);
+      this.setState({ customerList: stateCopy });
+      console.log(this.state.customerList);
+    }
   };
 
   render() {
     let chatHistory;
     console.log(this.state.chatHistory[0]);
-    if (this.state.chatHistory.length != 0) {
+    if (this.state.chatHistory[0] != undefined) {
       chatHistory = this.state.chatHistory[0].chat.map((msg, index) => {
-        return <div key={index}>{msg.data.content}</div>;
+        return (
+          <div key={index}>
+            <p
+              style={{ margin: "1px", fontSize: "10px", fontWeight: "lighter" }}
+            >
+              {msg.data.from.name}{" "}
+              {msg.data.time !== undefined && msg.data.time}
+            </p>
+            {msg.data.content}
+            <hr />
+          </div>
+        );
       });
     }
 

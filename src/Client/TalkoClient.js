@@ -7,7 +7,6 @@ var port = process.env.CLIENT_PORT || 5050;
 
 // SERVER connection object
 var socket;
-// const updateMsgs;
 
 /**
  * @class [TalkoClient] :toolkit for talko client
@@ -21,7 +20,8 @@ export default class TalkoClient {
   constructor(upState) {
     this.session = new SessionHandler();
     this.upState = upState;
-    this.name = "(React) Customer";
+    this.name = "";
+    this.myRep = "";
   }
   /**
    * @function start :initializes necessary socket and listeners
@@ -33,18 +33,14 @@ export default class TalkoClient {
     // Connect to SERVER acknowledgement
     socket.on("connect", () => {
       this.session.handleConnection();
-
-      // let incGreetingMsg = Message(null, 0, "-=SERVER=-", null, message);
-      // this.upState(incGreetingMsg);
-
-      // Outgoing Message Identifying as Customer
-      let outIdentifyMsg = new Message();
-      outIdentifyMsg.newMessage("support", socket.id, this.name, "customer");
-      socket.emit("identify", outIdentifyMsg);
     });
 
     socket.on("rep_found", message => {
-      this.upState(message);
+      if (message.data.content == socket.id) {
+        console.log(message);
+        this.myRep = message.data.from.id;
+        this.upState(message);
+      }
     });
 
     // Perform disconnection
@@ -64,8 +60,14 @@ export default class TalkoClient {
    */
   sendMessage(content) {
     let message = new Message();
-    message.newMessage(null, socket.id, this.name, content);
-    this.session.handleMessageSend(socket, message);
-    this.upState(message);
+    message.newMessage(this.myRep, socket.id, this.name, content);
+    this.session.handleMessageSend(socket, message, this.upState);
+  }
+
+  offer() {
+    // Outgoing Message Identifying as Customer
+    let outIdentifyMsg = new Message();
+    outIdentifyMsg.newMessage("support", socket.id, this.name, "customer");
+    socket.emit("identify", outIdentifyMsg);
   }
 }

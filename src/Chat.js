@@ -47,12 +47,13 @@ export default class Chat extends Component {
   }
 
   updateState(m) {
-    console.log("updateState(m) CHAT");
+    console.log(m);
     this.setState({ messages: [...this.state.messages, m] });
   }
 
   setName(name) {
     this.talkoClient.name = name;
+    this.talkoClient.offer();
     console.log(this.talkoClient.name);
     this.forceUpdate();
   }
@@ -182,7 +183,7 @@ export default class Chat extends Component {
                 &or;
               </MinimizeButton>
             </Header>
-            {this.talkoClient.name == "(React) Customer" ? (
+            {this.talkoClient.name == "" ? (
               <ContactForm setName={this.setName} />
             ) : (
               <>

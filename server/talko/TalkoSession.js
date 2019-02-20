@@ -32,6 +32,7 @@ class TalkoSession {
    * @param {string} name - The name of the customer
    */
   handleIdentity(socket, message) {
+    //if CUSTOMER
     if (message.data.content == "customer") {
       console.log("NEW CUST");
       this.custWaiting.push({
@@ -39,25 +40,19 @@ class TalkoSession {
         name: message.data.from.name
       });
       this.handleRoomJoin(socket, "support");
-      let from = message.data.from.id;
-      message.data.from.id = message.data.room;
-      message.data.room = from;
       socket.to("support").emit("offer", message);
-      //socket.emit("identify", { name, id: socket.id });
+      //if REPRESENTATIVE
     } else if (message.data.content == "representative") {
       console.log("new rep");
       this.handleRoomJoin(socket, "support");
       //   socket.emit("send_message", message);
-      this.handleWaitingList(socket);
-      // } else {
+      this.handleWaitingList(socket, message.data.from.name);
     }
   }
 
-  handleWaitingList(socket) {
+  handleWaitingList(socket, repName) {
     if (this.custWaiting.length != 0) {
-      //       handleOffer(socket);
-      //   let oMsg = Message.newMessage;
-      let cWait = this.custWaiting.shift();
+      let cWait = this.custWaiting[0];
       let oMsg = Message.newMessage(
         socket.id,
         cWait.id,
@@ -65,15 +60,21 @@ class TalkoSession {
         "ACCEPT ME: " + cWait.name + "!"
       );
       socket.emit("offer", oMsg);
-      //   cWait.to("support").emit("offer", message);
-      console.log(this.custWaiting);
-      console.log("^handling^");
+
+      oMsg = Message.newMessage("support", socket.id, repName, cWait.id);
     }
   }
 
-  //   handleOfferAccept(socket, message) {
-  //     this.handleRoomJoin(socket, this.custWaiting.shift);
-  //   }
+  handleOfferAccept(socket, message) {
+    this.custWaiting.shift();
+    // this.handleRoomJoin(socket, this.custWaiting.shift().room);
+    socket.to(message.data.room).emit("rep_found", message);
+    socket.emit("rep_found", message);
+    // cWait.to("support").emit("offer", message);
+    console.log(message);
+    console.log("^handling^");
+    // this.handleWaitingList(socket, message.data.from.name);
+  }
 
   /**
    * Handles the joining of a socket room

@@ -18,6 +18,6 @@ export default class Message {
     this.data.from.name = name;
     this.data.content = content;
 
-    return this.data;
+    return this;
   }
 }
