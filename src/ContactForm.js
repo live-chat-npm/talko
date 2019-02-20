@@ -8,8 +8,6 @@ export default class ContactForm extends Component {
 
   sendName = e => {
     e.preventDefault();
-    console.log("name");
-
     this.showChat();
   };
 

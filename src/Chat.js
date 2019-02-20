@@ -152,8 +152,6 @@ export default class Chat extends Component {
       );
     });
 
-    console.log(this.props);
-
     return (
       <ThemeProvider theme={theme}>
         {this.state.minimized ? (

@@ -1,17 +1,23 @@
 import React, { Component } from "react";
 import TalkoClientRep from "./client/TalkoClientRep";
 import Message from "./client/Messages/Message";
+import logo from "./images/talko-logo.png";
 import {
   UserListWindow,
   Header,
   UsersList,
+  UserListHeader,
+  UserWindow,
   User,
+  AcceptButton,
+  RepSendButton,
   UserMessagesWindow,
   TabWindow,
   Tab,
   ChatContentWindow,
   ReplyInputWindow,
   ReplyInput,
+  CloseTabButton,
   Status
 } from "./ChatComponents";
 
@@ -25,9 +31,27 @@ class UserList extends Component {
         { name: "Customer 1", chat: "hello" },
         { name: "Customer 2", chat: "hihihi" },
         { name: "Customer 3", chat: "sup" },
-        { name: "Customer 4", chat: "yellow" }
+        {
+          name: "Customer 4",
+          chat:
+            "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ad aliquam est pariatur soluta, minus magni animi quasi impedit itaque veniam sapiente dolorum inventore cumque laudantium! Quos dolorum rem consequatur et."
+        },
+        { name: "Customer 5", chat: "hello" },
+        { name: "Customer 6", chat: "hihihi" },
+        { name: "Customer 7", chat: "sup" },
+        { name: "Customer 8", chat: "hello" },
+        { name: "Customer 9", chat: "hihihi" },
+        { name: "Customer 10", chat: "sup" },
+        { name: "Customer 11", chat: "hello" },
+        { name: "Customer 12", chat: "hihihi" },
+        { name: "Customer 13", chat: "sup" },
+        { name: "Customer 14", chat: "hello" },
+        { name: "Customer 15", chat: "hihihi" },
+        { name: "Customer 16", chat: "sup" }
       ],
-      currentMessage: ""
+      currentMessage: "",
+      active: null,
+      rightClickWindow: false
     };
 
     this.tRep = new TalkoClientRep(this.updateState);
@@ -48,19 +72,45 @@ class UserList extends Component {
 
   createTab = (customer, chat) => {
     const { tabs } = this.state;
+    let chatTest = [chat];
 
-    //
+    //checks if the tab already exists
     for (let i = 0; i < tabs.length; i++) {
       if (customer === tabs[i]) {
+        //finds the index of the customer in the tabs array and sets that number to active
+        let index = this.state.tabs.findIndex(
+          customerName => customer === customerName
+        );
+
+        this.setState({
+          active: index
+        });
+
+        //sets the chat history for the selected customer
+        this.setState({
+          chatHistory: [...chatTest]
+        });
         return;
       }
     }
 
-    this.setState({
-      tabs: [...this.state.tabs, customer]
-    });
+    this.setState(
+      {
+        tabs: [...this.state.tabs, customer]
+      },
+      () => {
+        //finds the index of the customer in the tabs array and sets that number to active
+        let index = this.state.tabs.findIndex(
+          customerName => customer === customerName
+        );
 
-    //clears the chat history each time a tab is created then runs a callback
+        this.setState({
+          active: index
+        });
+      }
+    );
+
+    //clears the chat history each time a tab is created then runs a function
     this.setState(
       {
         chatHistory: []
@@ -112,7 +162,7 @@ class UserList extends Component {
     );
   };
 
-  //Sets the chat history for the selected customer
+  //Sets the chat history for the selected customer when a tab is clicked
   setChatHistory = name => {
     let cust = this.state.customerList.filter(customer => {
       return customer.name === name;
@@ -163,28 +213,70 @@ class UserList extends Component {
     });
 
     let selectTabs = this.state.tabs.map((tab, index) => {
+      let color = this.state.active === index ? "#56CC82" : "#292F36";
+
       return (
-        <Tab key={index}>
-          <div
-            onClick={() => this.closeTab(tab)}
-            style={{ border: "solid 2px black" }}
+        <Tab
+          key={index}
+          onClick={() => {
+            this.setChatHistory(tab);
+            this.setState({
+              active: index
+            });
+          }}
+          style={{ background: color, marginBottom: "50px" }}
+        >
+          <div>{tab}</div>
+          <CloseTabButton
+            onClick={e => {
+              e.stopPropagation();
+              this.closeTab(tab);
+              if (this.state.tabs[index + 1]) {
+                this.setState({
+                  active: index
+                });
+              } else {
+                this.setState({
+                  active: index - 1
+                });
+              }
+            }}
           >
             X
-          </div>
-          <div onClick={() => this.setChatHistory(tab)}>{tab}</div>
+          </CloseTabButton>
         </Tab>
       );
     });
 
     let roster = this.state.customerList.map((customer, index) => {
+      let abbreviatedText = customer.chat
+        .split("")
+        .splice(0, 80)
+        .join("");
+
       return (
-        <User
+        <UserWindow
           key={index}
-          onClick={() => this.createTab(customer.name, customer.chat)}
+          onClick={() => {
+            this.createTab(customer.name, customer.chat);
+          }}
         >
-          <Status />
-          {customer.name}
-        </User>
+          <User key={index}>
+            <Status />
+            {customer.name}
+          </User>
+          <div
+            style={{
+              color: "#fff",
+              opacity: 0.7,
+              fontSize: "12px",
+              paddingLeft: "30px",
+              paddingBottom: "10px"
+            }}
+          >
+            {abbreviatedText + (abbreviatedText.length < 80 ? "" : "...")}
+          </div>
+        </UserWindow>
       );
     });
 
@@ -192,12 +284,20 @@ class UserList extends Component {
       <div style={{ display: "flex" }}>
         <UserListWindow>
           <Header>
-            <div style={{ fontSize: "15px", color: "white" }}>
-              <h1>Customers</h1>
-            </div>
+            <UserListHeader>
+              <img src={logo} alt="logo" />
+              <h1
+                style={{
+                  color: "white",
+                  letterSpacing: "1px"
+                }}
+              >
+                Talko.io
+              </h1>
+              <AcceptButton onClick={this.acceptCustomer}>Accept</AcceptButton>
+            </UserListHeader>
           </Header>
           <UsersList>{roster}</UsersList>
-          <button onClick={this.acceptCustomer}>Accept</button>
         </UserListWindow>
         <UserMessagesWindow>
           <div>
@@ -209,7 +309,7 @@ class UserList extends Component {
               onKeyPress={this.pressedEnter}
               onChange={e => this.setState({ currentMessage: e.target.value })}
             />
-            <button onClick={this.sendMessage}>Send</button>
+            <RepSendButton onClick={this.sendMessage}>Send</RepSendButton>
           </ReplyInputWindow>
         </UserMessagesWindow>
       </div>
