@@ -29,12 +29,7 @@ class UserList extends Component {
     this.state = {
       tabs: [],
       chatHistory: [],
-      customerList: [
-        { name: "Customer 1", id: "1", chat: [this.firstMsg] },
-        { name: "Customer 2", id: "2", chat: [this.firstMsg] },
-        { name: "Customer 3", id: "3", chat: [this.firstMsg] },
-        { name: "Customer 4", id: "4", chat: [this.firstMsg] }
-      ],
+      customerList: [],
       currentMessage: "",
       currentOffer: ""
     };
