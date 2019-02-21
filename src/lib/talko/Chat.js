@@ -37,7 +37,7 @@ export default class Chat extends Component {
       // contactForm: true
     };
     //reference to the newest message in the message window
-    newMessage = React.createRef();
+    this.newMessage = React.createRef();
     this.updateState = this.updateState.bind(this);
     this.setName = this.setName.bind(this);
     this.scrollToBottom = this.scrollToBottom.bind(this);
