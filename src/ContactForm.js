@@ -13,9 +13,6 @@ export default class ContactForm extends Component {
     e.preventDefault();
 
     this.props.setName(this.state.name);
-    console.log("name: " + this.state.name);
-    // console.log("name: "+this.state.name);
-    // this.showChat();
   };
 
   render() {

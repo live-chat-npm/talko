@@ -62,6 +62,8 @@ class TalkoSession {
       socket.emit("offer", oMsg);
 
       oMsg = Message.newMessage("support", socket.id, repName, cWait.id);
+
+      this.handleWaitingList(socket, repName);
     }
   }
 

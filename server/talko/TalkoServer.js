@@ -52,9 +52,9 @@ class TalkoServer {
         this.session.handleOfferAccept(socket, message);
       });
 
-      socket.on("next_waiting", repName => {
-        this.session.handleWaitingList(socket, repName);
-      });
+      // socket.on("next_waiting", repName => {
+      //   this.session.handleWaitingList(socket, repName);
+      // });
 
       socket.on("join", room => {
         this.session.handleRoomJoin(socket, room, defaultGreeting);

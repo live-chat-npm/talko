@@ -3,7 +3,7 @@ import { ThemeProvider } from "styled-components";
 import logo from "./images/logo.jpg";
 import sendButtonBlack from "./images/send-button-black.png";
 import sendButtonWhite from "./images/send-button-white.png";
-import TalkoClient from "./Client/TalkoClient";
+import TalkoClient from "./client/TalkoClient";
 import {
   ChatWindow,
   InputWindow,
@@ -54,7 +54,6 @@ export default class Chat extends Component {
   setName(name) {
     this.talkoClient.name = name;
     this.talkoClient.offer();
-    console.log(this.talkoClient.name);
     this.forceUpdate();
   }
 
@@ -155,8 +154,6 @@ export default class Chat extends Component {
         </Message>
       );
     });
-
-    console.log(this.props);
 
     return (
       <ThemeProvider theme={theme}>
