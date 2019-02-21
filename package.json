@@ -2,7 +2,7 @@
   "name": "talko-react",
   "version": "1.1.1",
   "proxy": "http://localhost",
-  "main": "build/index.js",
+  "main": "build/lib/index.js",
   "dependencies": {
     "socket.io-client": "^2.2.0",
     "styled-components": "^4.1.3",
@@ -26,7 +26,7 @@
     "eject": "react-scripts eject"
   },
   "files": [
-    "/build/lib"
+    "/build/lib/"
   ],
   "browserslist": [
     ">0.2%",
