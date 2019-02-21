@@ -10,7 +10,7 @@ export default class ContactForm extends Component {
     e.preventDefault();
     console.log("name");
 
-    this.showChat();
+    this.props.showChat();
   };
 
   render() {

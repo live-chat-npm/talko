@@ -98,6 +98,8 @@ export default class Chat extends Component {
     }
   };
 
+  showChat = () => this.setState({ contactForm: false });
+
   render() {
     //Theme object holds css values that are passed into the theme provider
     const theme = {};
@@ -179,7 +181,7 @@ export default class Chat extends Component {
               </MinimizeButton>
             </Header>
             {this.state.contactForm ? (
-              <ContactForm />
+              <ContactForm showChat={this.showChat} />
             ) : (
               <>
                 <Profile>
