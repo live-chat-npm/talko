@@ -36,8 +36,16 @@ export default class Chat extends Component {
       minimized: true //Default position for chat window,
       // contactForm: true
     };
+    //reference to the newest message in the message window
+    this.newMessage = React.createRef();
     this.updateState = this.updateState.bind(this);
     this.setName = this.setName.bind(this);
+    this.scrollToBottom = this.scrollToBottom.bind(this);
+    this.toggleChatWindow = this.toggleChatWindow.bind(this);
+    this.handleInput = this.handleInput.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
+    this.pressedEnter = this.pressedEnter.bind(this);
+    this.showChat = this.showChat.bind(this);
 
     this.talkoClient = new TalkoClient(this.updateState);
   }
@@ -57,8 +65,6 @@ export default class Chat extends Component {
     this.forceUpdate();
   }
 
-  //reference to the newest message in the message window
-  newMessage = React.createRef();
 
   componentDidUpdate() {
     if (this.newMessage.current) {
@@ -67,26 +73,26 @@ export default class Chat extends Component {
   }
 
   //Keeps the message window scrolled to the newest message
-  scrollToBottom = () => {
+  scrollToBottom() {
     this.newMessage.current.scrollIntoView();
   };
 
   //Minimizes or maximizes the chat window
-  toggleChatWindow = () => {
+  toggleChatWindow() {
     this.setState({
       minimized: !this.state.minimized
     });
   };
 
   //User input to send messages
-  handleInput = e => {
+  handleInput(e) {
     this.setState({
       input: e.target.value
     });
   };
 
   //Adds the message to the messages array in state
-  sendMessage = () => {
+  sendMessage() {
     console.log("SENT: " + this.state.input);
     this.talkoClient.sendMessage(this.state.input);
 
@@ -95,11 +101,15 @@ export default class Chat extends Component {
     });
   };
 
-  pressedEnter = event => {
+  pressedEnter(event) {
     if (event.key === "Enter") {
       this.sendMessage();
     }
   };
+
+  showChat(){
+    this.setState({ contactForm: false });
+  }
 
   render() {
     //Theme object holds css values that are passed into the theme provider
@@ -183,7 +193,7 @@ export default class Chat extends Component {
             {this.talkoClient.name == "" ? (
               <ContactForm setName={this.setName} />
             ) : (
-              <>
+              <div>
                 <Profile>
                   <ProfileImage src={this.props.profileImage} />
                   <div>
@@ -210,7 +220,7 @@ export default class Chat extends Component {
                 <Footer>
                   <Credit>Powered by Talko.io</Credit>
                 </Footer>
-              </>
+              </div>
             )}
           </ChatWindow>
         )}

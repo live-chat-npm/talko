@@ -35,6 +35,12 @@ class UserList extends Component {
     };
     this.updateState = this.updateState.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
+    this.closeTab = this.closeTab.bind(this);
+    this.createTab = this.createTab.bind(this);
+    this.setChatHistory = this.setChatHistory.bind(this);
+    this.pressedEnter = this.pressedEnter.bind(this);
+    this.newOffer = this.newOffer.bind(this);
+    this.acceptCustomer = this.acceptCustomer.bind(this);
     this.tRep = new TalkoClientRep(this.updateState);
   }
 
@@ -57,7 +63,7 @@ class UserList extends Component {
     }
   }
 
-  createTab = (customer, chat) => {
+  createTab(customer, chat) {
     const { tabs } = this.state;
 
     //checks if the tab already exists
@@ -110,7 +116,7 @@ class UserList extends Component {
     );
   };
 
-  closeTab = customer => {
+  closeTab(customer) {
     //references the chat history for the next tab after one is closed
     let nextCustomer;
     //stores the index of the next customer to be used later
@@ -149,7 +155,7 @@ class UserList extends Component {
   };
 
   //Sets the chat history for the selected customer when a tab is clicked
-  setChatHistory = name => {
+  setChatHistory(name) {
     let cust = this.state.customerList.filter(customer => {
       return customer.name === name;
     });
@@ -166,21 +172,22 @@ class UserList extends Component {
     );
   }
 
-  pressedEnter = event => {
+  pressedEnter(event) {
     if (event.key === "Enter") {
       this.sendMessage();
     }
   };
 
-  newOffer = name => {
+  newOffer(name) {
     this.setState({ currentOffer: name });
   };
 
-  acceptCustomer = () => {
+  acceptCustomer() {
     if (this.state.currentOffer) {
       let newC = {};
       newC = this.tRep.offerAccept();
-      newC = { ...newC, chat: [this.firstMsg] };
+      newC = Object.assign({}, newC, { chat: [this.firstMsg] });
+      // newC = { ...newC, chat: [this.firstMsg] };
       let stateCopy = this.state.customerList; //.map((copy)=>{true})
       stateCopy.push(newC);
       this.setState({ customerList: stateCopy });
