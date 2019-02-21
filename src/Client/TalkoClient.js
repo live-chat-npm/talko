@@ -7,7 +7,6 @@ var port = process.env.CLIENT_PORT || 5050;
 
 // SERVER connection object
 var socket;
-// const updateMsgs;
 
 /**
  * @class [TalkoClient] :toolkit for talko client
@@ -21,11 +20,13 @@ export default class TalkoClient {
   constructor(upState) {
     this.session = new SessionHandler();
     this.upState = upState;
+    this.name = "";
+    this.myRep = "";
   }
   /**
    * @function start :initializes necessary socket and listeners
    */
-  start(upState) {
+  start() {
     // Connect to SERVER on specified port
     socket = io(":" + port);
 
@@ -34,23 +35,12 @@ export default class TalkoClient {
       this.session.handleConnection();
     });
 
-    // Receive greeting (msg.content <string>) from SERVER
-    socket.on("greeting", message => {
-      let incGreetingMsg = Message(null, 0, "-=SERVER=-", null, message);
-      this.upState(incGreetingMsg);
-      // Outgoing Message Identifying as Customer
-      let outIdentifyMsg = Message(
-        new Date().toUTCString(),
-        socket.id,
-        "(React) Customer",
-        null,
-        "Customer"
-      );
-      socket.emit("identify", outIdentifyMsg);
-    });
-
     socket.on("rep_found", message => {
-      this.upState(message);
+      if (message.data.content == socket.id) {
+        console.log(message);
+        this.myRep = message.data.from.id;
+        this.upState(message);
+      }
     });
 
     // Perform disconnection
@@ -68,8 +58,16 @@ export default class TalkoClient {
    * @function sendMessage :sends message object to server.
    * @param {message{from:{id:number, avatar:string, name:string}, content:string} message
    */
-  sendMessage(message) {
-    message.from.name = "(React) Customer";
-    this.session.handleMessageSend(socket, message);
+  sendMessage(content) {
+    let message = new Message();
+    message.newMessage(this.myRep, socket.id, this.name, content);
+    this.session.handleMessageSend(socket, message, this.upState);
+  }
+
+  offer() {
+    // Outgoing Message Identifying as Customer
+    let outIdentifyMsg = new Message();
+    outIdentifyMsg.newMessage("support", socket.id, this.name, "customer");
+    socket.emit("identify", outIdentifyMsg);
   }
 }

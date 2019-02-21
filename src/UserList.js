@@ -1,66 +1,102 @@
 import React, { Component } from "react";
 import TalkoClientRep from "./client/TalkoClientRep";
 import Message from "./client/Messages/Message";
+import logo from "./images/talko-logo.png";
 import {
   UserListWindow,
   Header,
   UsersList,
+  UserListHeader,
+  UserWindow,
   User,
+  AcceptButton,
+  RepSendButton,
   UserMessagesWindow,
   TabWindow,
   Tab,
   ChatContentWindow,
   ReplyInputWindow,
   ReplyInput,
+  CloseTabButton,
   Status
 } from "./ChatComponents";
 
 class UserList extends Component {
   constructor() {
     super();
+    this.firstMsg = new Message();
+    this.firstMsg.newMessage("support", 1, "SERVER", "HI!");
     this.state = {
       tabs: [],
       chatHistory: [],
-      customerList: [
-        { name: "Customer 1", chat: "hello" },
-        { name: "Customer 2", chat: "hihihi" },
-        { name: "Customer 3", chat: "sup" },
-        { name: "Customer 4", chat: "yellow" }
-      ],
-      currentMessage: ""
+      customerList: [],
+      currentMessage: "",
+      currentOffer: ""
     };
-
+    this.updateState = this.updateState.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
     this.tRep = new TalkoClientRep(this.updateState);
   }
 
   componentDidMount() {
-    this.tRep.startOfferConnection();
+    this.tRep.startOfferConnection(this.newOffer);
   }
 
-  updateState(m, id) {
-    let newMsg = {};
-    // let idd = id;
-    newMsg[id] = { ...this.state.chatHistory[id], m };
-    this.setState({
-      chatHistory: { ...this.state.chatHistory, newMsg }
+  updateState(m, local) {
+    let stateCopy = Object.assign([], this.state.customerList);
+    let cust = stateCopy.filter(customer => {
+      return customer.id == local; //m.data.from.id;
     });
+
+    if (cust[0]) {
+      let cPos = stateCopy.indexOf(cust[0]);
+      cust = cust[0].id;
+      let newMsg = [...this.state.customerList[cPos].chat, m];
+      stateCopy[cPos].chat = newMsg;
+      this.setState({ customerList: stateCopy });
+    }
   }
 
   createTab = (customer, chat) => {
     const { tabs } = this.state;
 
-    //
+    //checks if the tab already exists
     for (let i = 0; i < tabs.length; i++) {
       if (customer === tabs[i]) {
+        //finds the index of the customer in the tabs array and sets that number to active
+        let index = this.state.tabs.findIndex(
+          customerName => customer === customerName
+        );
+
+        this.setState({
+          active: index
+        });
+
+        //sets the chat history for the selected customer
+        this.setState({
+          chatHistory: [...this.state.chatHistory, chat]
+        });
         return;
       }
     }
 
-    this.setState({
-      tabs: [...this.state.tabs, customer]
-    });
+    this.setState(
+      {
+        tabs: [...this.state.tabs, customer]
+      },
+      () => {
+        //finds the index of the customer in the tabs array and sets that number to active
+        let index = this.state.tabs.findIndex(
+          customerName => customer === customerName
+        );
 
-    //clears the chat history each time a tab is created then runs a callback
+        this.setState({
+          active: index
+        });
+      }
+    );
+
+    //clears the chat history each time a tab is created then runs a function
     this.setState(
       {
         chatHistory: []
@@ -101,7 +137,7 @@ class UserList extends Component {
 
         if (currentChatHistory) {
           this.setState({
-            chatHistory: [currentChatHistory.chat]
+            chatHistory: [currentChatHistory]
           });
         } else {
           this.setState({
@@ -112,34 +148,21 @@ class UserList extends Component {
     );
   };
 
-  //Sets the chat history for the selected customer
+  //Sets the chat history for the selected customer when a tab is clicked
   setChatHistory = name => {
     let cust = this.state.customerList.filter(customer => {
       return customer.name === name;
     });
 
-    this.setState(
-      {
-        chatHistory: []
-      },
-      () => {
-        this.setState({
-          chatHistory: [...this.state.chatHistory, cust[0].chat]
-        });
-      }
-    );
+    this.setState({
+      chatHistory: [cust[0]]
+    });
   };
 
   sendMessage() {
     this.tRep.sendMessage(
-      Object.values(this.state.currentCustomer),
-      new Message(
-        new Date().toUTCString(),
-        0,
-        null,
-        null,
-        this.state.currentMessage
-      )
+      this.state.chatHistory[0].id,
+      this.state.currentMessage
     );
   }
 
@@ -149,42 +172,111 @@ class UserList extends Component {
     }
   };
 
+  newOffer = name => {
+    this.setState({ currentOffer: name });
+  };
+
   acceptCustomer = () => {
-    let newC = {};
-    newC = this.tRep.offerAccept();
-    // let newCID = this.tRep.offerAccept();
-    // let newCList = Object.assign({}, this.tRep.offerAccept());
-    this.setState({ customerList: { ...this.state.customerList, newC } });
+    if (this.state.currentOffer) {
+      let newC = {};
+      newC = this.tRep.offerAccept();
+      newC = { ...newC, chat: [this.firstMsg] };
+      let stateCopy = this.state.customerList; //.map((copy)=>{true})
+      stateCopy.push(newC);
+      this.setState({ customerList: stateCopy });
+    }
   };
 
   render() {
-    let chatHistory = this.state.chatHistory.map((history, index) => {
-      return <div key={index}>{history}</div>;
-    });
+    let chatHistory;
+    if (this.state.chatHistory[0]) {
+      chatHistory = this.state.chatHistory[0].chat.map((msg, index) => {
+        return (
+          <div key={index}>
+            <p
+              style={{
+                margin: "1px",
+                fontSize: "10px",
+                fontWeight: "lighter"
+              }}
+            >
+              {msg.data.from.name}
+              {msg.data.time && msg.data.time}
+            </p>
+            <div style={{ paddingLeft: "5px" }}>{msg.data.content}</div>
+            <hr />
+          </div>
+        );
+      });
+    }
 
     let selectTabs = this.state.tabs.map((tab, index) => {
+      let color = this.state.active === index ? "#56CC82" : "#292F36";
       return (
-        <Tab key={index}>
-          <div
-            onClick={() => this.closeTab(tab)}
-            style={{ border: "solid 2px black" }}
+        <Tab
+          key={index}
+          onClick={() => {
+            this.setChatHistory(tab);
+            this.setState({
+              active: index
+            });
+          }}
+          style={{ background: color }}
+        >
+          <div>{tab}</div>
+          <CloseTabButton
+            onClick={e => {
+              e.stopPropagation();
+              this.closeTab(tab);
+              if (this.state.tabs[index + 1]) {
+                this.setState({
+                  active: index
+                });
+              } else {
+                this.setState({
+                  active: index - 1
+                });
+              }
+            }}
           >
             X
-          </div>
-          <div onClick={() => this.setChatHistory(tab)}>{tab}</div>
+          </CloseTabButton>
         </Tab>
       );
     });
 
+    // new inc customer offer
+    let offerCustomer = this.state.currentOffer;
+
     let roster = this.state.customerList.map((customer, index) => {
+      let abbreviatedText = customer.chat.slice();
+      abbreviatedText =
+        abbreviatedText[abbreviatedText.length - 1].data.content;
+
       return (
-        <User
+        <UserWindow
           key={index}
-          onClick={() => this.createTab(customer.name, customer.chat)}
+          onClick={() => {
+            this.createTab(customer.name, customer.chat);
+            this.setChatHistory(customer.name);
+          }}
         >
-          <Status />
-          {customer.name}
-        </User>
+          <User key={index}>
+            <Status />
+            {customer.name}
+          </User>
+          <div
+            style={{
+              color: "#fff",
+              opacity: 0.7,
+              fontSize: "12px",
+              paddingLeft: "30px",
+              paddingBottom: "10px"
+            }}
+          >
+            {abbreviatedText + (abbreviatedText.length < 80 ? "" : "...")}
+          </div>
+        </UserWindow>
       );
     });
 
@@ -192,12 +284,21 @@ class UserList extends Component {
       <div style={{ display: "flex" }}>
         <UserListWindow>
           <Header>
-            <div style={{ fontSize: "15px", color: "white" }}>
-              <h1>Customers</h1>
-            </div>
+            <UserListHeader>
+              <img src={logo} alt="logo" />
+              <h1
+                style={{
+                  color: "white",
+                  letterSpacing: "1px"
+                }}
+              >
+                Talko.io
+              </h1>
+              {offerCustomer}
+              <AcceptButton onClick={this.acceptCustomer}>Accept</AcceptButton>
+            </UserListHeader>
           </Header>
           <UsersList>{roster}</UsersList>
-          <button onClick={this.acceptCustomer}>Accept</button>
         </UserListWindow>
         <UserMessagesWindow>
           <div>
@@ -209,7 +310,7 @@ class UserList extends Component {
               onKeyPress={this.pressedEnter}
               onChange={e => this.setState({ currentMessage: e.target.value })}
             />
-            <button onClick={this.sendMessage}>Send</button>
+            <RepSendButton onClick={this.sendMessage}>Send</RepSendButton>
           </ReplyInputWindow>
         </UserMessagesWindow>
       </div>

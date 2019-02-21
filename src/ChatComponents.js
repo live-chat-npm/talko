@@ -84,7 +84,6 @@ export const Input = styled.input`
 `;
 
 export const SendButton = styled.img`
-  // opacity: 0.1;
   padding-right: 15px;
   cursor: pointer;
   margin-bottom: 0;
@@ -208,34 +207,50 @@ export const Credit = styled.p`
 
 export const UserListWindow = styled.div`
   background: #2f363e;
-  border-radius: 3px;
   color: #575757;
   height: 100vh;
   width: 20vw;
   display: flex;
   flex-direction: column;
+
+  overflow: auto;
+`;
+
+export const UserListHeader = styled.div`
+  display: flex;
   align-items: center;
-  box-shadow: 0px 0px 10px 1px lightgray;
+  margin-top: auto;
+  margin-right: auto;
+  padding-left: 10px;
+
+  img {
+    padding-right: 10px;
+  }
 `;
 
 export const UsersList = styled.ul`
   list-style-type: none;
   padding-left: 0;
+  padding-top: 50px;
   width: 100%;
 `;
 
-export const User = styled.li`
-  color: #fff
-  height: 30px;
-  width: 100%;
-  font-size: 22px;
-  display: flex;
-  align-items: center;
-  padding-left: 10px;
+export const UserWindow = styled.div`
   &:hover {
     color: lightgray;
     cursor: pointer;
+    background-color: #252b32;
   }
+`;
+
+export const User = styled.li`
+  display: flex;
+  color: #fff
+  height: 50px;
+  width: calc(20vw - 12px);
+  font-size: 22px;
+  align-items: center;
+  padding-left: 10px;
 `;
 
 export const Status = styled.div`
@@ -246,6 +261,18 @@ export const Status = styled.div`
   background-color: #84ff84;
 `;
 
+export const AcceptButton = styled.button`
+  width: 70px;
+  padding: 3px;
+  margin-left: 15px;
+  color: white;
+  background-color: #252b32;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
 export const UserMessagesWindow = styled.div`
   width: 80vw;
   display: flex;
@@ -254,34 +281,67 @@ export const UserMessagesWindow = styled.div`
 
 export const TabWindow = styled.div`
   width: 100%;
-  height: 4vh;
+  height: 50px;
+  background-color: #1e2228;
   display: flex;
   overflow-x: auto;
 `;
 
 export const Tab = styled.div`
-  border: solid 2px black;
-  width: 100px;
-  height: 20px;
+  background-color: #2f363e;
+  width: 140px;
+  height: 45px;
   cursor: pointer;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+  border-left: solid 1px #0d0d0d;
+  padding-left: 5px;
+  white-space: pre;
+`;
+
+export const CloseTabButton = styled.div`
+  opacity: 0;
+  transform: scaleX(1.4);
+  font-size: 10px;
+  padding-right: 6px;
+  padding-left: 6px;
+
+  ${Tab}:hover & {
+    opacity: 1;
+  }
 `;
 
 export const ChatContentWindow = styled.div`
   box-shadow: 0px 0px 10px -5px lightgray;
   width: 80vw;
-  height: 90vh;
 `;
 
 export const ReplyInputWindow = styled.div`
-  width: 100%;
-  height: 50px;
+  width: 80vw;
   display: flex;
+  position: absolute;
+  bottom: 0;
 `;
 
 export const ReplyInput = styled.input`
   width: 100%;
-  height: 5vh;
+  height: 35px;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const RepSendButton = styled.button`
+  background-color: #252b32;
+  border: #252b32;
+  color: #fff;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 // Styled componets for contact form

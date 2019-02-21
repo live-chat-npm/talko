@@ -33,10 +33,11 @@ export default class Chat extends Component {
     this.state = {
       messages: [],
       input: "",
-      minimized: true, //Default position for chat window,
-      contactForm: true
+      minimized: true //Default position for chat window,
+      // contactForm: true
     };
     this.updateState = this.updateState.bind(this);
+    this.setName = this.setName.bind(this);
 
     this.talkoClient = new TalkoClient(this.updateState);
   }
@@ -46,7 +47,14 @@ export default class Chat extends Component {
   }
 
   updateState(m) {
+    console.log(m);
     this.setState({ messages: [...this.state.messages, m] });
+  }
+
+  setName(name) {
+    this.talkoClient.name = name;
+    this.talkoClient.offer();
+    this.forceUpdate();
   }
 
   //reference to the newest message in the message window
@@ -79,13 +87,8 @@ export default class Chat extends Component {
 
   //Adds the message to the messages array in state
   sendMessage = () => {
-    let msg = {
-      time: new Date().toUTCString(),
-      from: { id: -1, avatar: "", name: "" },
-      content: this.state.input
-    };
-
-    this.talkoClient.sendMessage(msg);
+    console.log("SENT: " + this.state.input);
+    this.talkoClient.sendMessage(this.state.input);
 
     this.setState({
       input: ""
@@ -147,14 +150,13 @@ export default class Chat extends Component {
       return (
         <Message key={index}>
           <p style={{ margin: "1px", fontSize: "10px", fontWeight: "lighter" }}>
-            {message.from.name} {message.time !== undefined && message.time}
+            {message.data.from.name}{" "}
+            {message.data.time !== undefined && message.data.time}
           </p>
-          {message.content}
+          {message.data.content}
         </Message>
       );
     });
-
-    console.log(this.props);
 
     return (
       <ThemeProvider theme={theme}>
@@ -180,8 +182,8 @@ export default class Chat extends Component {
                 &or;
               </MinimizeButton>
             </Header>
-            {this.state.contactForm ? (
-              <ContactForm showChat={this.showChat} />
+            {this.talkoClient.name == "" ? (
+              <ContactForm setName={this.setName} />
             ) : (
               <>
                 <Profile>
