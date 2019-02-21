@@ -1,13 +1,23 @@
-export default function Message(time, id, name, avatar, content) {
-  const data = {
-    time: time,
-    from: {
-      id: id,
-      name: name,
-      avatar: avatar
-    },
-    content: content
-  };
+export default class Message {
+  constructor() {
+    this.data = {
+      time: undefined,
+      room: undefined,
+      from: {
+        id: undefined,
+        name: undefined
+      },
+      content: undefined
+    };
+  }
 
-  return data;
+  newMessage(to, id, name, content) {
+    this.data.time = new Date().toUTCString();
+    this.data.room = to;
+    this.data.from.id = id;
+    this.data.from.name = name;
+    this.data.content = content;
+
+    return this;
+  }
 }

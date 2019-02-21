@@ -3,11 +3,14 @@ const socketIO = require("socket.io");
 const TalkoSession = require("./TalkoSession");
 const express = require("express");
 const { json } = require("body-parser");
+const Message = require("../Messages/Message");
 
 const app = express();
 app.use(json());
 const server = http.createServer(app);
 const io = socketIO(server);
+
+var message = Message;
 
 /**
  * A socket.io server to communicate with the talko live-chat client
@@ -40,16 +43,25 @@ class TalkoServer {
     io.on("connection", socket => {
       this.session.handleConnection(socket);
 
-      socket.on("customer", name => {
-        this.session.handleCustomer(socket, name);
+      //
+      socket.on("identify", message => {
+        this.session.handleIdentity(socket, message);
+      });
+
+      socket.on("offer_accept", message => {
+        this.session.handleOfferAccept(socket, message);
+      });
+
+      socket.on("next_waiting", repName => {
+        this.session.handleWaitingList(socket, repName);
       });
 
       socket.on("join", room => {
         this.session.handleRoomJoin(socket, room, defaultGreeting);
       });
 
-      socket.on("send_message", msg =>
-        this.session.handleMessageSend(socket, msg)
+      socket.on("send_message", message =>
+        this.session.handleMessageSend(socket, message)
       );
 
       socket.on("disconnect", () => this.session.handleDisconnection());
@@ -67,7 +79,7 @@ class TalkoServer {
 
   /**
    * Gets the uninvoked express instance
-   * 
+   *
    * @returns {express} the uninvoked express instnace
    */
   getExpress() {
