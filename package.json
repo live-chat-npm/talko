@@ -1,6 +1,6 @@
 {
   "name": "talko-react",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "proxy": "http://localhost",
   "main": "build/lib/index.js",
   "dependencies": {
