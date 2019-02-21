@@ -47,7 +47,7 @@ class UserList extends Component {
       return customer.id == local; //m.data.from.id;
     });
 
-    if (cust[0] != undefined) {
+    if (cust[0]) {
       let cPos = stateCopy.indexOf(cust[0]);
       cust = cust[0].id;
       console.log(cPos);
@@ -136,12 +136,17 @@ class UserList extends Component {
   };
 
   sendMessage() {
-    console.log("SENDING ATTEMPT");
-    console.log(this.state.chatHistory[0].id);
-    this.tRep.sendMessage(
-      this.state.chatHistory[0].id,
-      this.state.currentMessage
-    );
+    if (this.state.chatHistory[0]) {
+      console.log("SENDING ATTEMPT");
+      console.log(this.state.chatHistory[0].id);
+      this.tRep.sendMessage(
+        this.state.chatHistory[0].id,
+        this.state.currentMessage
+      );
+      this.setState({ currentMessage: "" });
+    } else {
+      alert("No selected Customer!");
+    }
   }
 
   pressedEnter = event => {
@@ -170,15 +175,14 @@ class UserList extends Component {
   render() {
     let chatHistory;
     console.log(this.state.chatHistory[0]);
-    if (this.state.chatHistory[0] != undefined) {
+    if (this.state.chatHistory[0]) {
       chatHistory = this.state.chatHistory[0].chat.map((msg, index) => {
         return (
           <div key={index}>
             <p
               style={{ margin: "1px", fontSize: "10px", fontWeight: "lighter" }}
             >
-              {msg.data.from.name}{" "}
-              {msg.data.time !== undefined && msg.data.time}
+              {msg.data.from.name} {msg.data.time && msg.data.time}
             </p>
             {msg.data.content}
             <hr />
@@ -238,10 +242,17 @@ class UserList extends Component {
           </div>
           <ReplyInputWindow>
             <ReplyInput
+              value={this.state.currentMessage}
               onKeyPress={this.pressedEnter}
               onChange={e => this.setState({ currentMessage: e.target.value })}
             />
-            <button onClick={this.sendMessage}>Send</button>
+            <button
+              onClick={() => {
+                this.sendMessage();
+              }}
+            >
+              Send
+            </button>
           </ReplyInputWindow>
         </UserMessagesWindow>
       </div>

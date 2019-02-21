@@ -149,8 +149,7 @@ export default class Chat extends Component {
       return (
         <Message key={index}>
           <p style={{ margin: "1px", fontSize: "10px", fontWeight: "lighter" }}>
-            {message.data.from.name}{" "}
-            {message.data.time !== undefined && message.data.time}
+            {message.data.from.name} {message.data.time && message.data.time}
           </p>
           {message.data.content}
         </Message>

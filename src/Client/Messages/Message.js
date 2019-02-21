@@ -1,13 +1,13 @@
 export default class Message {
   constructor() {
     this.data = {
-      time: undefined,
-      room: undefined,
+      time: null,
+      room: null,
       from: {
-        id: undefined,
-        name: undefined
+        id: null,
+        name: null
       },
-      content: undefined
+      content: null
     };
   }
 

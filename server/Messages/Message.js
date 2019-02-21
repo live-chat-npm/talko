@@ -1,9 +1,10 @@
 function newMessage(to, id, name, content) {
-  this.data = { time: new Date().toUTCString() };
-  // this.data.time = ;
-  this.data.room = to;
-  this.data.from = { id: id, name: name };
-  this.data.content = content;
+  this.data = {
+    time: new Date().toUTCString(),
+    room: to,
+    from: { id: id, name: name },
+    content: content
+  };
 
   return this;
 }
