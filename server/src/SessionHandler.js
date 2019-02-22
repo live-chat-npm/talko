@@ -1,4 +1,4 @@
-const TalkoSession = require("./talko/TalkoSession");
+const TalkoSession = require("../talko/TalkoSession");
 
 class SessionHandler extends TalkoSession {
 

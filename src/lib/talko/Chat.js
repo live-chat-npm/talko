@@ -25,21 +25,34 @@ import {
   Credit
 } from "./ChatComponents";
 import ContactForm from "./ContactForm";
+import { callbackify } from "util";
+import { getParseTreeNode } from "typescript";
 
 export default class Chat extends Component {
   constructor() {
     super();
 
     this.state = {
+      myMsgs: [],
       messages: [],
       input: "",
       minimized: true //Default position for chat window,
       // contactForm: true
     };
+    //reference to the newest message in the message window
+    this.newMessage = React.createRef();
     this.updateState = this.updateState.bind(this);
+    this.myMessage = this.myMessage.bind(this);
     this.setName = this.setName.bind(this);
+    this.scrollToBottom = this.scrollToBottom.bind(this);
+    this.toggleChatWindow = this.toggleChatWindow.bind(this);
+    this.handleInput = this.handleInput.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
+    this.pressedEnter = this.pressedEnter.bind(this);
+    this.showChat = this.showChat.bind(this);
+    this.updateScroll = this.updateScroll.bind(this);
 
-    this.talkoClient = new TalkoClient(this.updateState);
+    this.talkoClient = new TalkoClient(this.updateState, this.myMessage);
   }
 
   componentDidMount() {
@@ -49,6 +62,14 @@ export default class Chat extends Component {
   updateState(m) {
     console.log(m);
     this.setState({ messages: [...this.state.messages, m] });
+    this.updateScroll();
+  }
+
+  myMessage(m) {
+    this.setState({
+      myMsgs: [...this.state.myMsgs, this.state.messages.length]
+    });
+    this.updateState(m);
   }
 
   setName(name) {
@@ -57,9 +78,6 @@ export default class Chat extends Component {
     this.forceUpdate();
   }
 
-  //reference to the newest message in the message window
-  newMessage = React.createRef();
-
   componentDidUpdate() {
     if (this.newMessage.current) {
       this.scrollToBottom();
@@ -67,39 +85,49 @@ export default class Chat extends Component {
   }
 
   //Keeps the message window scrolled to the newest message
-  scrollToBottom = () => {
+  scrollToBottom() {
     this.newMessage.current.scrollIntoView();
-  };
+  }
 
   //Minimizes or maximizes the chat window
-  toggleChatWindow = () => {
+  toggleChatWindow() {
     this.setState({
       minimized: !this.state.minimized
     });
-  };
+  }
 
   //User input to send messages
-  handleInput = e => {
+  handleInput(e) {
     this.setState({
       input: e.target.value
     });
-  };
+  }
 
   //Adds the message to the messages array in state
-  sendMessage = () => {
+  sendMessage() {
     console.log("SENT: " + this.state.input);
     this.talkoClient.sendMessage(this.state.input);
 
     this.setState({
       input: ""
     });
-  };
+  }
 
-  pressedEnter = event => {
+  pressedEnter(event) {
     if (event.key === "Enter") {
       this.sendMessage();
     }
-  };
+  }
+
+  showChat() {
+    this.setState({ contactForm: false });
+  }
+
+  updateScroll() {
+    var element = document.getElementById("MessageArea");
+    element.scrollTop = element.scrollHeight;
+    console.log("scrollinggggg");
+  }
 
   render() {
     //Theme object holds css values that are passed into the theme provider
@@ -147,10 +175,107 @@ export default class Chat extends Component {
     let dispMessages = this.state.messages.map((message, index) => {
       return (
         <Message key={index}>
-          <p style={{ margin: "1px", fontSize: "10px", fontWeight: "lighter" }}>
-            {message.data.from.name} {message.data.time && message.data.time}
-          </p>
-          {message.data.content}
+          {this.state.myMsgs.includes(index) ? (
+            <div
+              style={{
+                float: "right",
+                "min-width": "50%",
+                "max-width": "calc(100% - 30px)",
+                border: "2px groove #33ff55",
+                display: "inline-block",
+                padding: "3px 3px 5px 3px",
+                margin: "5px",
+                "background-color": "lightgreen",
+                "border-radius": "40px 30px 0 40px",
+                "box-shadow": "-3px 3px 6px #222222"
+              }}
+            >
+              <p
+                style={{
+                  margin: "0px",
+                  "text-align": "center",
+                  fontSize: "10px",
+                  fontWeight: "lighter"
+                }}
+              >
+                {message.data.time && message.data.time}
+                {/* <hr style={{ "border-color": "lightgreen" }} /> */}
+              </p>
+              <p
+                style={{
+                  "text-align": "center",
+                  margin: "8px 12px 4px 12px",
+                  fontSize: "14px",
+                  fontWeight: "normal"
+                }}
+              >
+                {message.data.content}
+              </p>
+              <p
+                style={{
+                  fontSize: "10px",
+                  "border-radius": "5px 5px 0 5px",
+                  border: "2px inset #33ff55",
+                  margin: "0px",
+                  padding: "0px 5px",
+                  float: "right",
+                  fontWeight: "lighter"
+                }}
+              >
+                {message.data.from.name}
+              </p>
+            </div>
+          ) : (
+            <div
+              style={{
+                float: "left",
+                "min-width": "50%",
+                "max-width": "calc(100% - 30px)",
+                border: "2px groove #bbddff",
+                display: "inline-block",
+                padding: "3px 3px 5px 3px",
+                margin: "5px",
+                "background-color": "lightblue",
+                "border-radius": "30px 40px 40px 0",
+                "box-shadow": "-3px 3px 6px #222222"
+              }}
+            >
+              <p
+                style={{
+                  margin: "0px",
+                  "text-align": "center",
+                  fontSize: "10px",
+                  fontWeight: "lighter"
+                }}
+              >
+                {message.data.time && message.data.time}
+                {/* <hr style={{ "border-color": "lightblue" }} /> */}
+              </p>
+              <p
+                style={{
+                  "text-align": "center",
+                  margin: "8px 12px 4px 12px",
+                  fontSize: "14px",
+                  fontWeight: "normal"
+                }}
+              >
+                {message.data.content}
+              </p>
+              <p
+                style={{
+                  fontSize: "10px",
+                  "border-radius": "5px 5px 5px 0",
+                  border: "2px inset #bbddff",
+                  margin: "0px",
+                  padding: "0px 5px",
+                  float: "left",
+                  fontWeight: "lighter"
+                }}
+              >
+                {message.data.from.name}
+              </p>
+            </div>
+          )}
         </Message>
       );
     });
@@ -158,7 +283,7 @@ export default class Chat extends Component {
     return (
       <ThemeProvider theme={theme}>
         {this.state.minimized ? (
-          <MinimizedChatWindow>
+          <MinimizedChatWindow onClick={this.toggleChatWindow}>
             <div
               style={{
                 fontSize: "10px",
@@ -167,31 +292,30 @@ export default class Chat extends Component {
               }}
             />
             <HeaderTitle>{this.props.headerTitle}</HeaderTitle>
-            <MaximizeButton onClick={this.toggleChatWindow}>
-              &and;
-            </MaximizeButton>
+            <MaximizeButton>&and;</MaximizeButton>
           </MinimizedChatWindow>
         ) : (
           <ChatWindow>
-            <Header>
+            <Header onClick={this.toggleChatWindow}>
               <HeaderTitle>{this.props.headerTitle}</HeaderTitle>
-              <MinimizeButton onClick={this.toggleChatWindow}>
-                &or;
-              </MinimizeButton>
+              <MinimizeButton>&or;</MinimizeButton>
             </Header>
             {this.talkoClient.name == "" ? (
               <ContactForm setName={this.setName} />
             ) : (
-              <>
+              <div>
                 <Profile>
-                  <ProfileImage src={this.props.profileImage} />
+                  <ProfileImage
+                    style={{ "border-radius": "10px" }}
+                    src={this.props.profileImage}
+                  />
                   <div>
                     <Name>{this.props.name}</Name>
                     <Title>{this.props.title}</Title>
                   </div>
                   <Logo src={logo} />
                 </Profile>
-                <MessageWindow>
+                <MessageWindow id="MessageArea" style={{ overflow: "auto" }}>
                   {dispMessages} <div ref={this.newMessage} />
                 </MessageWindow>
                 <InputWindow>
@@ -209,7 +333,7 @@ export default class Chat extends Component {
                 <Footer>
                   <Credit>Powered by Talko.io</Credit>
                 </Footer>
-              </>
+              </div>
             )}
           </ChatWindow>
         )}

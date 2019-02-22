@@ -7,9 +7,11 @@ export default class ContactForm extends Component {
     this.state = {
       name: ""
     };
+
+    this.sendName = this.sendName.bind(this);
   }
 
-  sendName = e => {
+  sendName(e) {
     e.preventDefault();
 
     this.props.setName(this.state.name);

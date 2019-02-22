@@ -206,6 +206,7 @@ export const Credit = styled.p`
 //************************************* */
 
 export const UserListWindow = styled.div`
+  box-shadow: 4px 4px 4px #222222;
   background: #2f363e;
   color: #575757;
   height: 100vh;

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import "./App.css";
-import Chat from "./Chat";
-import UserList from "./UserList";
-import userImage from "./images/user-image.jpg";
+import Chat from "./lib/talko/Chat";
+import UserList from "./lib/talko/UserList";
+import userImage from "./lib/talko/images/user-image.jpg";
 
 class App extends Component {
   render() {
@@ -12,9 +12,9 @@ class App extends Component {
           <Chat
             theme="light"
             profileImage={userImage}
-            title="Manager"
-            name="Alex Alec"
-            headerTitle="Live Chat"
+            title="Our very best coder!"
+            name="John Thummel"
+            headerTitle="Support Chat"
           />
         </div>
         <UserList />

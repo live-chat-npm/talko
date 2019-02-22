@@ -17,8 +17,9 @@ export default class TalkoClient {
    * @param {SessionHandler} session
    * @param {callback} upState
    */
-  constructor(upState) {
+  constructor(upState, myMsg) {
     this.session = new SessionHandler();
+    this.myMsg = myMsg;
     this.upState = upState;
     this.name = "";
     this.myRep = "";
@@ -36,11 +37,15 @@ export default class TalkoClient {
     });
 
     socket.on("rep_found", message => {
-      if (message.data.content == socket.id) {
+      if (message.data.room == socket.id) {
         console.log(message);
         this.myRep = message.data.from.id;
         this.upState(message);
       }
+    });
+
+    socket.on("greeting", message => {
+      this.upState(message);
     });
 
     // Perform disconnection
@@ -61,7 +66,9 @@ export default class TalkoClient {
   sendMessage(content) {
     let message = new Message();
     message.newMessage(this.myRep, socket.id, this.name, content);
-    this.session.handleMessageSend(socket, message, this.upState);
+    socket.emit("send_message", message);
+    this.myMsg(message, message.data.room);
+    // this.session.handleMessageSend(socket, message, this.upState);
   }
 
   offer() {

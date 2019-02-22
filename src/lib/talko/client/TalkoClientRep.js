@@ -95,10 +95,10 @@ export default class TalkoClientRep {
   offerAccept() {
     let outOfferAcceptMsg = new Message();
     outOfferAcceptMsg.newMessage(
-      "support",
+      this.offerCustId[0],
       offerSocket.id,
       this.name,
-      this.offerCustId[0]
+      "this.offerCustId[0]"
     );
     offerSocket.emit("offer_accept", outOfferAcceptMsg);
     console.log("offer accepted: " + this.offerCustId[0]);

@@ -24,8 +24,8 @@ import {
 class UserList extends Component {
   constructor() {
     super();
-    this.firstMsg = new Message();
-    this.firstMsg.newMessage("support", 1, "SERVER", "HI!");
+    this.firstMsg = [];
+    // this.firstMsg.newMessage(0, 0, "SERVER", "");
     this.state = {
       tabs: [],
       chatHistory: [],
@@ -35,6 +35,12 @@ class UserList extends Component {
     };
     this.updateState = this.updateState.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
+    this.closeTab = this.closeTab.bind(this);
+    this.createTab = this.createTab.bind(this);
+    this.setChatHistory = this.setChatHistory.bind(this);
+    this.pressedEnter = this.pressedEnter.bind(this);
+    this.newOffer = this.newOffer.bind(this);
+    this.acceptCustomer = this.acceptCustomer.bind(this);
     this.tRep = new TalkoClientRep(this.updateState);
   }
 
@@ -192,7 +198,10 @@ class UserList extends Component {
     if (this.state.currentOffer) {
       let newC = {};
       newC = this.tRep.offerAccept();
-      newC = { ...newC, chat: [this.firstMsg] };
+      this.firstMsg.push(new Message());
+      this.firstMsg[this.firstMsg.length - 1].data.content =
+        "You've accepted Customer: \"" + newC.name + '"';
+      newC = { ...newC, chat: [this.firstMsg[this.firstMsg.length - 1]] };
       let stateCopy = this.state.customerList; //.map((copy)=>{true})
       stateCopy.push(newC);
       this.setState({ customerList: stateCopy });
@@ -213,8 +222,14 @@ class UserList extends Component {
                 fontWeight: "lighter"
               }}
             >
-              {msg.data.from.name}
-              {msg.data.time && msg.data.time}
+              {msg.data.time ? (
+                <div>
+                  - [{msg.data.from.name}]
+                  <div style={{ float: "right" }}> - {msg.data.time} - </div>
+                </div>
+              ) : (
+                <div> - {msg.data.from.name} - </div>
+              )}
             </p>
             <div style={{ paddingLeft: "5px" }}>{msg.data.content}</div>
             <hr />
@@ -323,8 +338,10 @@ class UserList extends Component {
                   </div>
                   <AcceptButton
                     style={{
+                      "background-color": "#990000",
+                      "border-color": "red",
                       "box-shadow": "0 0 100px red",
-                      "text-shadow": "0 0 10px pink",
+                      "text-shadow": "0 0 10px red",
                       color: "white"
                     }}
                     onClick={this.acceptCustomer}
@@ -333,7 +350,10 @@ class UserList extends Component {
                   </AcceptButton>
                 </>
               ) : (
-                <hr />
+                <>
+                  <hr />
+                  <hr />
+                </>
               )}
               <hr />
             </UserListHeader>
