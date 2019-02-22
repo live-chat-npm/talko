@@ -63,7 +63,7 @@ class UserList extends Component {
     }
   }
 
-  createTab = (customer, chat) => {
+  createTab(customer, chat) {
     const { tabs } = this.state;
 
     //checks if the tab already exists
@@ -115,9 +115,9 @@ class UserList extends Component {
       }
     );
     this.setChatHistory(customer);
-  };
+  }
 
-  closeTab = customer => {
+  closeTab(customer) {
     //references the chat history for the next tab after one is closed
     let nextCustomer;
     //stores the index of the next customer to be used later
@@ -153,10 +153,10 @@ class UserList extends Component {
         }
       }
     );
-  };
+  }
 
   //Sets the chat history for the selected customer when a tab is clicked
-  setChatHistory = name => {
+  setChatHistory(name) {
     let cust = this.state.customerList.filter(customer => {
       return customer.name === name;
     });
@@ -164,7 +164,7 @@ class UserList extends Component {
     this.setState({
       chatHistory: [cust[0]]
     });
-  };
+  }
 
   sendMessage() {
     if (this.state.chatHistory[0]) {
@@ -180,21 +180,21 @@ class UserList extends Component {
     }
   }
 
-  pressedEnter = event => {
+  pressedEnter(event) {
     if (event.key === "Enter") {
       this.sendMessage();
     }
-  };
+  }
 
-  newOffer = name => {
+  newOffer(name) {
     if (name) {
       this.setState({ currentOffer: this.state.currentOffer + 1 });
     } else {
       this.setState({ currentOffer: this.state.currentOffer - 1 });
     }
-  };
+  }
 
-  acceptCustomer = () => {
+  acceptCustomer() {
     if (this.state.currentOffer) {
       let newC = {};
       newC = this.tRep.offerAccept();
@@ -207,7 +207,7 @@ class UserList extends Component {
       this.setState({ customerList: stateCopy });
       this.createTab(newC.name, newC.chat);
     }
-  };
+  }
 
   render() {
     let chatHistory;

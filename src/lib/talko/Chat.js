@@ -50,7 +50,6 @@ export default class Chat extends Component {
     this.sendMessage = this.sendMessage.bind(this);
     this.pressedEnter = this.pressedEnter.bind(this);
     this.showChat = this.showChat.bind(this);
-    this.updateScroll = this.updateScroll.bind(this);
 
     this.talkoClient = new TalkoClient(this.updateState, this.myMessage);
   }
@@ -62,7 +61,6 @@ export default class Chat extends Component {
   updateState(m) {
     console.log(m);
     this.setState({ messages: [...this.state.messages, m] });
-    this.updateScroll();
   }
 
   myMessage(m) {
@@ -123,12 +121,6 @@ export default class Chat extends Component {
     this.setState({ contactForm: false });
   }
 
-  updateScroll() {
-    var element = document.getElementById("MessageArea");
-    element.scrollTop = element.scrollHeight;
-    console.log("scrollinggggg");
-  }
-
   render() {
     //Theme object holds css values that are passed into the theme provider
     const theme = {};
@@ -181,11 +173,11 @@ export default class Chat extends Component {
                 float: "right",
                 "min-width": "50%",
                 "max-width": "calc(100% - 30px)",
-                border: "2px groove #33ff55",
+                border: "1px groove #33ff55",
                 display: "inline-block",
                 padding: "3px 3px 5px 3px",
                 margin: "5px",
-                "background-color": "lightgreen",
+                // "background-color": "lightgreen",
                 "border-radius": "40px 30px 0 40px",
                 "box-shadow": "-3px 3px 6px #222222"
               }}
@@ -231,11 +223,11 @@ export default class Chat extends Component {
                 float: "left",
                 "min-width": "50%",
                 "max-width": "calc(100% - 30px)",
-                border: "2px groove #bbddff",
+                border: "1px groove #bbddff",
                 display: "inline-block",
                 padding: "3px 3px 5px 3px",
                 margin: "5px",
-                "background-color": "lightblue",
+                // "background-color": "lightblue",
                 "border-radius": "30px 40px 40px 0",
                 "box-shadow": "-3px 3px 6px #222222"
               }}
