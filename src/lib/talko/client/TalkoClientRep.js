@@ -21,8 +21,8 @@ export default class TalkoClientRep {
     this.upState = upState;
     this.name = "(React) Rep";
     this.myID = "";
-    this.offerCustId = null;
-    this.offerCustName = null;
+    this.offerCustId = [];
+    this.offerCustName = [];
   }
 
   /**
@@ -48,33 +48,21 @@ export default class TalkoClientRep {
 
     offerSocket.on("offer", message => {
       console.log(message);
-      if (this.offerCustId == null) {
-        this.offerCustId = message.data.from.id;
-        this.offerCustName = message.data.from.name;
-        console.log("offer: " + this.offerCustName);
-        newOffer(this.offerCustName);
-      } else {
-        let outOfferBusyMsg = new Message();
-        outOfferBusyMsg.newMessage(
-          "support",
-          offerSocket.id,
-          "(React) Rep",
-          this.offerCustId
-        );
-        offerSocket.emit("offer_busy", outOfferBusyMsg);
-        console.log("offer busy :[");
-      }
+      this.offerCustId.push(message.data.from.id);
+      this.offerCustName.push(message.data.from.name);
+      console.log("offer: " + this.offerCustName);
+      newOffer(this.offerCustName);
     });
 
     offerSocket.on("rep_found", message => {
       console.log(
-        "rep_found for: " + message.data.content + " / " + this.offerCustId
+        "rep_found for: " + message.data.content + " / " + this.offerCustId[0]
       );
-      if (this.offerCustId == message.data.content) {
-        this.offerCustId = null;
-        this.offerCustName = null;
+      if (this.offerCustId[0] == message.data.content) {
+        this.offerCustId.shift();
+        this.offerCustName.shift();
         newOffer(null);
-        offerSocket.emit("next_waiting", this.name);
+        // offerSocket.emit("next_waiting", this.name);
       }
     });
 
@@ -107,17 +95,17 @@ export default class TalkoClientRep {
   offerAccept() {
     let outOfferAcceptMsg = new Message();
     outOfferAcceptMsg.newMessage(
-      "support",
+      this.offerCustId[0],
       offerSocket.id,
       this.name,
-      this.offerCustId
+      "this.offerCustId[0]"
     );
     offerSocket.emit("offer_accept", outOfferAcceptMsg);
-    console.log("offer accepted: " + this.offerCustId);
+    console.log("offer accepted: " + this.offerCustId[0]);
 
     let obj = {};
-    obj["name"] = this.offerCustName;
-    obj["id"] = this.offerCustId;
+    obj["name"] = this.offerCustName[0];
+    obj["id"] = this.offerCustId[0];
 
     return obj;
   }

@@ -206,6 +206,7 @@ export const Credit = styled.p`
 //************************************* */
 
 export const UserListWindow = styled.div`
+  box-shadow: 4px 4px 4px #222222;
   background: #2f363e;
   color: #575757;
   height: 100vh;
@@ -217,7 +218,9 @@ export const UserListWindow = styled.div`
 `;
 
 export const UserListHeader = styled.div`
+  width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   margin-top: auto;
   margin-right: auto;
@@ -262,9 +265,10 @@ export const Status = styled.div`
 `;
 
 export const AcceptButton = styled.button`
+  border-radius: 5px;
   width: 70px;
   padding: 3px;
-  margin-left: 15px;
+  margin: 0 auto 0 auto;
   color: white;
   background-color: #252b32;
 

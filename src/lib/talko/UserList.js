@@ -24,14 +24,14 @@ import {
 class UserList extends Component {
   constructor() {
     super();
-    this.firstMsg = new Message();
-    this.firstMsg.newMessage("support", 1, "SERVER", "HI!");
+    this.firstMsg = [];
+    // this.firstMsg.newMessage(0, 0, "SERVER", "");
     this.state = {
       tabs: [],
       chatHistory: [],
       customerList: [],
       currentMessage: "",
-      currentOffer: ""
+      currentOffer: 0
     };
     this.updateState = this.updateState.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
@@ -114,7 +114,8 @@ class UserList extends Component {
         });
       }
     );
-  };
+    this.setChatHistory(customer);
+  }
 
   closeTab(customer) {
     //references the chat history for the next tab after one is closed
@@ -152,7 +153,7 @@ class UserList extends Component {
         }
       }
     );
-  };
+  }
 
   //Sets the chat history for the selected customer when a tab is clicked
   setChatHistory(name) {
@@ -163,40 +164,54 @@ class UserList extends Component {
     this.setState({
       chatHistory: [cust[0]]
     });
-  };
+  }
 
   sendMessage() {
-    this.tRep.sendMessage(
-      this.state.chatHistory[0].id,
-      this.state.currentMessage
-    );
+    if (this.state.chatHistory[0]) {
+      console.log("SENDING ATTEMPT");
+      console.log(this.state.chatHistory[0].id);
+      this.tRep.sendMessage(
+        this.state.chatHistory[0].id,
+        this.state.currentMessage
+      );
+      this.setState({ currentMessage: "" });
+    } else {
+      alert("No selected Customer!");
+    }
   }
 
   pressedEnter(event) {
     if (event.key === "Enter") {
       this.sendMessage();
     }
-  };
+  }
 
   newOffer(name) {
-    this.setState({ currentOffer: name });
-  };
+    if (name) {
+      this.setState({ currentOffer: this.state.currentOffer + 1 });
+    } else {
+      this.setState({ currentOffer: this.state.currentOffer - 1 });
+    }
+  }
 
   acceptCustomer() {
     if (this.state.currentOffer) {
       let newC = {};
       newC = this.tRep.offerAccept();
-      newC = Object.assign({}, newC, { chat: [this.firstMsg] });
-      // newC = { ...newC, chat: [this.firstMsg] };
+      this.firstMsg.push(new Message());
+      this.firstMsg[this.firstMsg.length - 1].data.content =
+        "You've accepted Customer: \"" + newC.name + '"';
+      newC = { ...newC, chat: [this.firstMsg[this.firstMsg.length - 1]] };
       let stateCopy = this.state.customerList; //.map((copy)=>{true})
       stateCopy.push(newC);
       this.setState({ customerList: stateCopy });
+      this.createTab(newC.name, newC.chat);
     }
-  };
+  }
 
   render() {
     let chatHistory;
-    if (this.state.chatHistory[0]) {
+    if (this.state.chatHistory[0] && this.state.chatHistory[0].chat) {
       chatHistory = this.state.chatHistory[0].chat.map((msg, index) => {
         return (
           <div key={index}>
@@ -207,8 +222,14 @@ class UserList extends Component {
                 fontWeight: "lighter"
               }}
             >
-              {msg.data.from.name}
-              {msg.data.time && msg.data.time}
+              {msg.data.time ? (
+                <div>
+                  - [{msg.data.from.name}]
+                  <div style={{ float: "right" }}> - {msg.data.time} - </div>
+                </div>
+              ) : (
+                <div> - {msg.data.from.name} - </div>
+              )}
             </p>
             <div style={{ paddingLeft: "5px" }}>{msg.data.content}</div>
             <hr />
@@ -265,7 +286,7 @@ class UserList extends Component {
           key={index}
           onClick={() => {
             this.createTab(customer.name, customer.chat);
-            this.setChatHistory(customer.name);
+            //this.setChatHistory(customer.name);
           }}
         >
           <User key={index}>
@@ -301,8 +322,40 @@ class UserList extends Component {
               >
                 Talko.io
               </h1>
-              {offerCustomer}
-              <AcceptButton onClick={this.acceptCustomer}>Accept</AcceptButton>
+              <hr />
+              {offerCustomer ? (
+                <>
+                  <div
+                    style={{
+                      margin: "0 auto 0 auto",
+                      // "text-decoration": "underline",
+                      padding: "1px 5px 2px 5px",
+                      "border-radius": "5px",
+                      color: "white"
+                    }}
+                  >
+                    <h2>{offerCustomer}</h2>
+                  </div>
+                  <AcceptButton
+                    style={{
+                      "background-color": "#990000",
+                      "border-color": "red",
+                      "box-shadow": "0 0 100px red",
+                      "text-shadow": "0 0 10px red",
+                      color: "white"
+                    }}
+                    onClick={this.acceptCustomer}
+                  >
+                    Accept
+                  </AcceptButton>
+                </>
+              ) : (
+                <>
+                  <hr />
+                  <hr />
+                </>
+              )}
+              <hr />
             </UserListHeader>
           </Header>
           <UsersList>{roster}</UsersList>
@@ -314,6 +367,7 @@ class UserList extends Component {
           </div>
           <ReplyInputWindow>
             <ReplyInput
+              value={this.state.currentMessage}
               onKeyPress={this.pressedEnter}
               onChange={e => this.setState({ currentMessage: e.target.value })}
             />

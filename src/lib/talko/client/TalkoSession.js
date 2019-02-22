@@ -38,7 +38,5 @@ export default class TalkoSession {
   /**
    * Handles a socket disconnections
    */
-  handleDisconnection(msg) {
-    console.log("SERVER: " + msg);
-  }
+  handleDisconnection() {}
 }
