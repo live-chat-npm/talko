@@ -1,11 +1,9 @@
-const TalkoSession = require("../talko/TalkoSession");
+const TalkoSession = require("./lib/talko/TalkoSession");
 
 class SessionHandler extends TalkoSession {
-
-    handleDisconnection() {
-        console.log("Disconnected!");
-    }
-
+  handleDisconnection() {
+    console.log("Disconnected!");
+  }
 }
 
 module.exports = SessionHandler;
