@@ -292,24 +292,56 @@ export default class Chat extends Component {
               <HeaderTitle>{this.props.headerTitle}</HeaderTitle>
               <MinimizeButton>&or;</MinimizeButton>
             </Header>
-            {this.talkoClient.name == "" ? (
-              <ContactForm setName={this.setName} />
-            ) : (
-              <div>
-                <Profile>
-                  <ProfileImage
-                    style={{ "border-radius": "10px" }}
-                    src={this.props.profileImage}
-                  />
-                  <div>
-                    <Name>{this.props.name}</Name>
-                    <Title>{this.props.title}</Title>
+
+            <div>
+              {this.talkoClient.name == "" && (
+                <div
+                  style={{
+                    opacity: "0.5",
+                    "z-index": 2,
+                    position: "absolute",
+                    height: "100%",
+                    width: "100%",
+                    "background-color": "rgba(0,0,0,0.5)",
+                    borderRadius: "5px 5px 5px 5px"
+                  }}
+                />
+              )}
+              <Profile>
+                <ProfileImage
+                  style={{ "border-radius": "10px" }}
+                  src={this.props.profileImage}
+                />
+                <div>
+                  <Name>{this.props.name}</Name>
+                  <Title>{this.props.title}</Title>
+                </div>
+                <Logo src={logo} />
+              </Profile>
+              <MessageWindow style={{ overflow: "auto" }}>
+                {dispMessages} <div ref={this.newMessage} />
+              </MessageWindow>
+              {this.talkoClient.name == "" ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center"
+                  }}
+                >
+                  <div
+                    style={{
+                      "z-index": "3",
+                      position: "absolute",
+                      top: "50%",
+                      border: "2px outset gray",
+                      boxShadow: "2px 2px 6px #333333"
+                    }}
+                  >
+                    <ContactForm setName={this.setName} />
                   </div>
-                  <Logo src={logo} />
-                </Profile>
-                <MessageWindow id="MessageArea" style={{ overflow: "auto" }}>
-                  {dispMessages} <div ref={this.newMessage} />
-                </MessageWindow>
+                  <InputWindow />
+                </div>
+              ) : (
                 <InputWindow>
                   <Input
                     onChange={this.handleInput}
@@ -322,11 +354,11 @@ export default class Chat extends Component {
                     onClick={this.sendMessage}
                   />
                 </InputWindow>
-                <Footer>
-                  <Credit>Powered by Talko.io</Credit>
-                </Footer>
-              </div>
-            )}
+              )}
+              <Footer>
+                <Credit>Powered by Talko.io</Credit>
+              </Footer>
+            </div>
           </ChatWindow>
         )}
       </ThemeProvider>

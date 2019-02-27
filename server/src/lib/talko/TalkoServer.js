@@ -12,11 +12,6 @@ const io = socketIO(server);
 
 var message = Message;
 
-/**
- * A socket.io server to communicate with the talko live-chat client
- *
- * @author Thomas Papp
- */
 class TalkoServer {
   /**
    * Constructs a new talko server instance
@@ -64,7 +59,9 @@ class TalkoServer {
         this.session.handleMessageSend(socket, message)
       );
 
-      socket.on("disconnect", () => this.session.handleDisconnection());
+      socket.on("disconnect", () => {
+        this.session.handleDisconnection();
+      });
     });
   }
 

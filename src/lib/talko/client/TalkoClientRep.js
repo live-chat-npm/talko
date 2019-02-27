@@ -58,10 +58,10 @@ export default class TalkoClientRep {
       console.log(
         "rep_found for: " + message.data.content + " / " + this.offerCustId[0]
       );
-      if (this.offerCustId[0] == message.data.content) {
+      if (this.offerCustId[0] == message.data.room) {
         this.offerCustId.shift();
         this.offerCustName.shift();
-        newOffer(null);
+        newOffer("");
         // offerSocket.emit("next_waiting", this.name);
       }
     });

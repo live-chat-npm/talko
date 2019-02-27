@@ -13,21 +13,23 @@ export default class ContactForm extends Component {
 
   sendName(e) {
     e.preventDefault();
-
     this.props.setName(this.state.name);
-  };
+  }
 
   render() {
     return (
       <Form onSubmit={e => this.sendName(e)}>
         <input
+          autoFocus
+          required
           type="text"
           placeholder="Enter your name"
           onChange={e => {
             this.setState({ name: e.target.value });
           }}
         />
-        <input type="submit" />
+        <br />
+        <input style={{ width: "100%" }} value="Go Talko!" type="submit" />
       </Form>
     );
   }

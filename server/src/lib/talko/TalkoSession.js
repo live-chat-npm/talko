@@ -1,9 +1,5 @@
 const Message = require("../Messages/Message");
-/**
- * A session handler skeleton for handling a socket session in the talko server
- *
- * @author Thomas Papp
- */
+
 class TalkoSession {
   /**
    * Constructs a new talko session. Does not allow direct instances, you must extend off this class.
@@ -50,9 +46,9 @@ class TalkoSession {
     }
   }
 
-  handleWaitingList(socket, repName) {
-    if (this.custWaiting.length != 0) {
-      let cWait = this.custWaiting[0];
+  handleWaitingList(socket) {
+    for (let i = 0; i < this.custWaiting.length; i++) {
+      let cWait = this.custWaiting[i];
       let oMsg = Message.newMessage(
         socket.id,
         cWait.id,
@@ -60,17 +56,20 @@ class TalkoSession {
         "ACCEPT ME: " + cWait.name + "!"
       );
       socket.emit("offer", oMsg);
+      console.log(this.custWaiting[i].name);
 
-      oMsg = Message.newMessage("support", socket.id, repName, cWait.id);
+      // oMsg = Message.newMessage("support", socket.id, repName, cWait.id);
 
-      this.handleWaitingList(socket, repName);
+      // this.handleWaitingList(socket, repName);
     }
   }
 
   handleOfferAccept(socket, message) {
     this.custWaiting.shift();
+    message.data.content =
+      "You have been connected with " + message.data.from.name + "!";
     // this.handleRoomJoin(socket, this.custWaiting.shift().room);
-    socket.to(message.data.room).emit("rep_found", message);
+    socket.to("support").emit("rep_found", message);
     socket.emit("rep_found", message);
     // cWait.to("support").emit("offer", message);
     console.log(message);
@@ -88,8 +87,10 @@ class TalkoSession {
    */
   handleRoomJoin(socket, room, defaultGreeting) {
     socket.join(room);
-    if (defaultGreeting) {
-      socket.emit("greeting", "Welcome! Thank you for choosing talko.io");
+    let greeting = Message.newMessage(0, socket.id, "Talko", defaultGreeting);
+    if (!defaultGreeting) {
+      greeting.data.content = "Welcome! Thank you for choosing talko.io!";
+      socket.emit("greeting", greeting);
     }
   }
 

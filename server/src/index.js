@@ -1,5 +1,5 @@
-const TalkoServer = require('../talko/TalkoServer');
-const SessionHandler = require('./SessionHandler');
+const TalkoServer = require("./lib/talko/TalkoServer");
+const SessionHandler = require("./SessionHandler");
 
 const sessionHandler = new SessionHandler();
 const server = new TalkoServer(sessionHandler);
