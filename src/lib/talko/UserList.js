@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import TalkoClientRep from "./client/TalkoClientRep";
 import Message from "./client/Messages/Message";
 import logo from "./images/talko-logo.png";
+import error from "./images/warning.png";
 import {
   UserListWindow,
   Header,
@@ -24,17 +25,23 @@ import {
 class UserList extends Component {
   constructor() {
     super();
-    this.firstMsg = [];
-    // this.firstMsg.newMessage(0, 0, "SERVER", "");
+    this.firstMsg = []; // this.firstMsg.newMessage(0, 0, "SERVER", "");
+
     this.state = {
       tabs: [],
       chatHistory: [],
       customerList: [],
       currentMessage: "",
-      currentOffer: 0
+      currentOffer: 0,
+      notification: false,
+      notificationMessage: "",
+      error: false //set to true if user triggers a notification that is for an error message
     };
+
+    this.newMessage = React.createRef();
     this.updateState = this.updateState.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
+    this.notification = this.notification.bind(this);
     this.closeTab = this.closeTab.bind(this);
     this.createTab = this.createTab.bind(this);
     this.setChatHistory = this.setChatHistory.bind(this);
@@ -46,6 +53,17 @@ class UserList extends Component {
 
   componentDidMount() {
     this.tRep.startOfferConnection(this.newOffer);
+  }
+
+  componentDidUpdate() {
+    if (this.newMessage.current) {
+      this.scrollToBottom();
+    }
+  }
+
+  //Keeps the message window scrolled to the newest message
+  scrollToBottom() {
+    this.newMessage.current.scrollIntoView();
   }
 
   updateState(m, local) {
@@ -61,6 +79,21 @@ class UserList extends Component {
       stateCopy[cPos].chat = newMsg;
       this.setState({ customerList: stateCopy });
     }
+  }
+
+  notification(message, error) {
+    this.setState({
+      notification: true,
+      notificationMessage: message,
+      error: error ? error : false
+    });
+
+    setTimeout(() => {
+      this.setState({
+        notification: false,
+        error: error ? error : false
+      });
+    }, 4000);
   }
 
   createTab(customer, chat) {
@@ -167,16 +200,18 @@ class UserList extends Component {
   }
 
   sendMessage() {
+    if (this.state.currentMessage == "") {
+      return;
+    }
+
     if (this.state.chatHistory[0]) {
-      console.log("SENDING ATTEMPT");
-      console.log(this.state.chatHistory[0].id);
       this.tRep.sendMessage(
         this.state.chatHistory[0].id,
         this.state.currentMessage
       );
       this.setState({ currentMessage: "" });
     } else {
-      alert("No selected Customer!");
+      this.notification("No Customer Selected", true);
     }
   }
 
@@ -213,26 +248,66 @@ class UserList extends Component {
     let chatHistory;
     if (this.state.chatHistory[0] && this.state.chatHistory[0].chat) {
       chatHistory = this.state.chatHistory[0].chat.map((msg, index) => {
+        let bgColor;
+        {
+          msg.data.time && msg.data.from.name.includes("Rep")
+            ? (bgColor = "#2F363E")
+            : (bgColor = "white");
+        }
         return (
-          <div key={index}>
-            <p
+          <div
+            key={index}
+            style={{
+              backgroundColor: bgColor,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              borderBottom: "solid 1px lightgray",
+              paddingTop: "2px",
+              lineHeight: "1.6",
+              paddingBottom: "10px"
+            }}
+          >
+            <div
               style={{
-                margin: "1px",
-                fontSize: "10px",
-                fontWeight: "lighter"
+                color:
+                  msg.data.time && msg.data.from.name.includes("Rep")
+                    ? "white"
+                    : "black"
               }}
             >
               {msg.data.time ? (
-                <div>
-                  - [{msg.data.from.name}]
-                  <div style={{ float: "right" }}> - {msg.data.time} - </div>
+                <div
+                  style={{
+                    paddingLeft: "5px",
+                    fontSize: "10px",
+                    fontWeight: "lighter",
+                    opacity: 0.8
+                  }}
+                >
+                  {msg.data.from.name.includes("Rep")
+                    ? "You"
+                    : msg.data.from.name}
                 </div>
-              ) : (
-                <div> - {msg.data.from.name} - </div>
-              )}
+              ) : null}
+              <div style={{ paddingLeft: "5px", maxWidth: "72vw" }}>
+                {msg.data.content}
+              </div>
+            </div>
+            <p
+              style={{
+                margin: "0px",
+                fontSize: "10px",
+                fontWeight: "lighter",
+                color:
+                  msg.data.time && msg.data.from.name.includes("Rep")
+                    ? "white"
+                    : "black",
+                paddingRight: "30px"
+              }}
+            >
+              <div> {msg.data.time} </div>
             </p>
-            <div style={{ paddingLeft: "5px" }}>{msg.data.content}</div>
-            <hr />
           </div>
         );
       });
@@ -278,15 +353,16 @@ class UserList extends Component {
 
     let roster = this.state.customerList.map((customer, index) => {
       let abbreviatedText = customer.chat.slice();
-      abbreviatedText =
-        abbreviatedText[abbreviatedText.length - 1].data.content;
+      abbreviatedText = abbreviatedText[abbreviatedText.length - 1].data.content
+        .split("")
+        .splice(0, 80)
+        .join("");
 
       return (
         <UserWindow
           key={index}
           onClick={() => {
             this.createTab(customer.name, customer.chat);
-            //this.setChatHistory(customer.name);
           }}
         >
           <User key={index}>
@@ -299,7 +375,8 @@ class UserList extends Component {
               opacity: 0.7,
               fontSize: "12px",
               paddingLeft: "30px",
-              paddingBottom: "10px"
+              paddingBottom: "10px",
+              paddingRight: "5px"
             }}
           >
             {abbreviatedText + (abbreviatedText.length < 80 ? "" : "...")}
@@ -313,49 +390,52 @@ class UserList extends Component {
         <UserListWindow>
           <Header>
             <UserListHeader>
-              <img src={logo} alt="logo" />
-              <h1
+              <div
                 style={{
-                  color: "white",
-                  letterSpacing: "1px"
+                  display: "flex",
+                  alignItems: "center"
                 }}
               >
-                Talko.io
-              </h1>
-              <hr />
+                <img src={logo} alt="logo" />
+                <h1
+                  style={{
+                    color: "white",
+                    letterSpacing: "1px"
+                  }}
+                >
+                  Talko.io
+                </h1>
+              </div>
               {offerCustomer ? (
-                <>
-                  <div
-                    style={{
-                      margin: "0 auto 0 auto",
-                      // "text-decoration": "underline",
-                      padding: "1px 5px 2px 5px",
-                      "border-radius": "5px",
-                      color: "white"
-                    }}
-                  >
-                    <h2>{offerCustomer}</h2>
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center"
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <AcceptButton
+                      style={{
+                        color: "white"
+                      }}
+                      onClick={this.acceptCustomer}
+                    >
+                      Accept
+                    </AcceptButton>
+                    <div
+                      style={{
+                        margin: "0 auto 0 auto",
+                        padding: "2px 8px",
+                        borderRadius: "5px",
+                        color: "white"
+                      }}
+                    >
+                      <h2>{offerCustomer}</h2>
+                    </div>
                   </div>
-                  <AcceptButton
-                    style={{
-                      "background-color": "#990000",
-                      "border-color": "red",
-                      "box-shadow": "0 0 100px red",
-                      "text-shadow": "0 0 10px red",
-                      color: "white"
-                    }}
-                    onClick={this.acceptCustomer}
-                  >
-                    Accept
-                  </AcceptButton>
-                </>
-              ) : (
-                <>
-                  <hr />
-                  <hr />
-                </>
-              )}
-              <hr />
+                </div>
+              ) : null}
             </UserListHeader>
           </Header>
           <UsersList>{roster}</UsersList>
@@ -363,7 +443,9 @@ class UserList extends Component {
         <UserMessagesWindow>
           <div>
             <TabWindow>{selectTabs}</TabWindow>
-            <ChatContentWindow>{chatHistory}</ChatContentWindow>
+            <ChatContentWindow>
+              {chatHistory} <div ref={this.newMessage} />
+            </ChatContentWindow>
           </div>
           <ReplyInputWindow>
             <ReplyInput
@@ -374,6 +456,45 @@ class UserList extends Component {
             <RepSendButton onClick={this.sendMessage}>Send</RepSendButton>
           </ReplyInputWindow>
         </UserMessagesWindow>
+        {this.state.notification ? (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              position: "fixed",
+              width: "230px",
+
+              transform: "translateX(calc(100vw - 230px))",
+              top: "70px",
+              background: "#1E2127",
+              border: "solid 2px black",
+              color: "white",
+              transition: ".2s"
+            }}
+          >
+            {this.state.error ? (
+              <img src={error} alt="error" style={{ paddingLeft: "10px" }} />
+            ) : null}
+            <p style={{ paddingLeft: "5px", paddingRight: "10px" }}>
+              {this.state.notificationMessage}
+            </p>
+          </div>
+        ) : (
+          <div
+            style={{
+              position: "fixed",
+              width: "200px",
+              transform: "translateX(120vw)",
+              top: "70px",
+              background: "white",
+              border: "solid 2px black",
+              transition: ".4s"
+            }}
+          >
+            <p>{this.state.notificationMessage}</p>
+          </div>
+        )}
       </div>
     );
   }

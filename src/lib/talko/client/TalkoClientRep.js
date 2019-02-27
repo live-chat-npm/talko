@@ -47,17 +47,12 @@ export default class TalkoClientRep {
     });
 
     offerSocket.on("offer", message => {
-      console.log(message);
       this.offerCustId.push(message.data.from.id);
       this.offerCustName.push(message.data.from.name);
-      console.log("offer: " + this.offerCustName);
       newOffer(this.offerCustName);
     });
 
     offerSocket.on("rep_found", message => {
-      console.log(
-        "rep_found for: " + message.data.content + " / " + this.offerCustId[0]
-      );
       if (this.offerCustId[0] == message.data.content) {
         this.offerCustId.shift();
         this.offerCustName.shift();
@@ -101,7 +96,6 @@ export default class TalkoClientRep {
       "this.offerCustId[0]"
     );
     offerSocket.emit("offer_accept", outOfferAcceptMsg);
-    console.log("offer accepted: " + this.offerCustId[0]);
 
     let obj = {};
     obj["name"] = this.offerCustName[0];
