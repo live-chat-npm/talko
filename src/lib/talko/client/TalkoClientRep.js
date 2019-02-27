@@ -19,7 +19,7 @@ export default class TalkoClientRep {
   constructor(upState) {
     this.session = new SessionHandler();
     this.upState = upState;
-    this.name = "(React) Rep";
+    this.name = "Talko Rep";
     this.myID = "";
     this.offerCustId = [];
     this.offerCustName = [];
@@ -53,10 +53,13 @@ export default class TalkoClientRep {
     });
 
     offerSocket.on("rep_found", message => {
-      if (this.offerCustId[0] == message.data.content) {
+      console.log(
+        "rep_found for: " + message.data.content + " / " + this.offerCustId[0]
+      );
+      if (this.offerCustId[0] == message.data.room) {
         this.offerCustId.shift();
         this.offerCustName.shift();
-        newOffer(null);
+        newOffer("");
         // offerSocket.emit("next_waiting", this.name);
       }
     });

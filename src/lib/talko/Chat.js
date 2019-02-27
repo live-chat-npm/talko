@@ -160,7 +160,7 @@ export default class Chat extends Component {
         theme.input = "lightgray";
         theme.header = "000";
         theme.headerTitleColor = "#fff";
-        theme.messageColor = "#fff";
+        theme.messageColor = "#000";
         theme.profileBackground = "#1c1c1c";
         theme.profileBoxShadowColor = "transparent";
         theme.profileBoxShadowSpread = "-2px";
@@ -171,6 +171,7 @@ export default class Chat extends Component {
         theme.footerBackgroundColor = "#1c1c1c";
         theme.creditColor = "#fff";
         theme.sendButton = sendButtonWhite;
+        theme.timeStampColor = "#fff";
         break;
       default:
         console.log("default theme");
@@ -245,9 +246,10 @@ export default class Chat extends Component {
                   </div>
                   <Logo src={logo} />
                 </Profile>
-                <MessageWindow>
+                <MessageWindow style={{ overflow: "auto" }}>
                   {dispMessages} <div ref={this.newMessage} />
                 </MessageWindow>
+
                 <InputWindow>
                   <Input
                     onChange={this.handleInput}
@@ -260,6 +262,7 @@ export default class Chat extends Component {
                     onClick={this.sendMessage}
                   />
                 </InputWindow>
+
                 <Footer>
                   <Credit>Powered by Talko.io</Credit>
                 </Footer>

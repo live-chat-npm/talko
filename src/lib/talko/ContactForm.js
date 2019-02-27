@@ -13,7 +13,6 @@ export default class ContactForm extends Component {
 
   sendName(e) {
     e.preventDefault();
-
     this.props.setName(this.state.name);
   }
 

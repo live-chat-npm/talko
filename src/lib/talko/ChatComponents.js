@@ -159,7 +159,7 @@ export const Logo = styled.img`
 export const MessageWindow = styled.div`
   height: 35vh;
   overflow: auto;
-  background-color: #ededed;
+  background-color: ${props => props.theme.messageWindow};
 `;
 
 export const Message = styled.div`
@@ -181,12 +181,14 @@ export const CustomerName = styled.p`
   margin: 0px;
   padding: 0px 5px;
   font-weight: lighter;
+  color: ${props => props.theme.timeStampColor};
 `;
 
 export const CustomerTimeStamp = styled.p`
   font-size: 10px;
   font-weight: lighter;
   margin: 0px;
+  color: ${props => props.theme.timeStampColor};
 `;
 
 export const CustomerMessageContentContainer = styled.div`
@@ -222,12 +224,14 @@ export const RepName = styled.p`
   margin: 0px;
   padding: 0px 5px;
   fontweight: lighter;
+  color: ${props => props.theme.timeStampColor};
 `;
 
 export const RepTimeStamp = styled.p`
   margin: 0px;
   font-size: 10px;
   font-weight: lighter;
+  color: ${props => props.theme.timeStampColor};
 `;
 
 export const RepMessageWindowContainer = styled.div`
