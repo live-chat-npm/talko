@@ -31,7 +31,7 @@ This keeps the chat component at the bottom of the page. This component accepts 
   
   This component is intended to be used by the representatives in a company. Since it is a full view component you can make it a route or render it any place you want.
    
-    import { UserList } from "talko-react";der!"   
+    import { UserList } from "talko-react";   
    
    
 
@@ -48,7 +48,7 @@ Start with setting up the SessionHandeler;
 *  Within this file; place the following code:
 _______________________________________________________________
 
-const { TalkoSession } = require("talko-server");
+`const { TalkoSession } = require("talko-server");
 
 class SessionHandler extends TalkoSession {
   handleConnection() {
@@ -57,7 +57,7 @@ class SessionHandler extends TalkoSession {
   }
 }
 
-module.exports = SessionHandler;
+module.exports = SessionHandler;`
 _______________________________________________________________
 SessionHandler extents the TalkoSession object which is necessary to connect the back end server to the front end of the Talko tool.
 
@@ -68,7 +68,8 @@ Now, we set up index.js files, which will consume the server object.
 *	If you have not already, download the talko client “npm install talko-server”
 *	Place the code below inside index.js:
 _______________________________________________________________
-   const path = require("path");
+  
+  `const path = require("path");
    const { TalkoServer } = require("talko-server");
    const SessionHandler = require("./SessionHandler");
 
@@ -77,7 +78,7 @@ _______________________________________________________________
    const express = server.getExpress();
    const app = server.getApp();
 
-   app.use(express.static(`${__dirname}/../build`));
+   app.use(express.static(`${__dirname}/../build`));`
 _______________________________________________________________
 *	“TalkoServer”, is deconstructed from the “talko-server” download from npm.
 *	“SessionClient” (setup earlier) is supplied as an argument to TalkoServer object, yielding a server object.
