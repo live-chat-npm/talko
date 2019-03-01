@@ -38,7 +38,6 @@ export default class TalkoClient {
 
     socket.on("rep_found", message => {
       if (message.data.room == socket.id) {
-        console.log(message);
         this.myRep = message.data.from.id;
         this.upState(message);
       }

@@ -18,6 +18,16 @@ import {
   Title,
   Logo,
   MessageWindow,
+  CustomerMessageWindow,
+  CustomerName,
+  CustomerTimeStamp,
+  CustomerMessageContentContainer,
+  CustomerMessageContent,
+  RepMessageWindow,
+  RepName,
+  RepTimeStamp,
+  RepMessageWindowContainer,
+  RepMessageContent,
   Message,
   MaximizeButton,
   MinimizeButton,
@@ -25,8 +35,6 @@ import {
   Credit
 } from "./ChatComponents";
 import ContactForm from "./ContactForm";
-import { callbackify } from "util";
-import { getParseTreeNode } from "typescript";
 
 export default class Chat extends Component {
   constructor() {
@@ -39,6 +47,7 @@ export default class Chat extends Component {
       minimized: true //Default position for chat window,
       // contactForm: true
     };
+
     //reference to the newest message in the message window
     this.newMessage = React.createRef();
     this.updateState = this.updateState.bind(this);
@@ -59,7 +68,6 @@ export default class Chat extends Component {
   }
 
   updateState(m) {
-    console.log(m);
     this.setState({ messages: [...this.state.messages, m] });
   }
 
@@ -103,7 +111,11 @@ export default class Chat extends Component {
 
   //Adds the message to the messages array in state
   sendMessage() {
-    console.log("SENT: " + this.state.input);
+    //error handling for sending empty messages
+    if (this.state.input === "") {
+      return;
+    }
+
     this.talkoClient.sendMessage(this.state.input);
 
     this.setState({
@@ -148,7 +160,7 @@ export default class Chat extends Component {
         theme.input = "lightgray";
         theme.header = "000";
         theme.headerTitleColor = "#fff";
-        theme.messageColor = "#fff";
+        theme.messageColor = "#000";
         theme.profileBackground = "#1c1c1c";
         theme.profileBoxShadowColor = "transparent";
         theme.profileBoxShadowSpread = "-2px";
@@ -159,6 +171,7 @@ export default class Chat extends Component {
         theme.footerBackgroundColor = "#1c1c1c";
         theme.creditColor = "#fff";
         theme.sendButton = sendButtonWhite;
+        theme.timeStampColor = "#fff";
         break;
       default:
         console.log("default theme");
@@ -168,105 +181,31 @@ export default class Chat extends Component {
       return (
         <Message key={index}>
           {this.state.myMsgs.includes(index) ? (
-            <div
-              style={{
-                float: "right",
-                "min-width": "50%",
-                "max-width": "calc(100% - 30px)",
-                border: "1px groove #33ff55",
-                display: "inline-block",
-                padding: "3px 3px 5px 3px",
-                margin: "5px",
-                // "background-color": "lightgreen",
-                "border-radius": "40px 30px 0 40px",
-                "box-shadow": "-3px 3px 6px #222222"
-              }}
-            >
-              <p
-                style={{
-                  margin: "0px",
-                  "text-align": "center",
-                  fontSize: "10px",
-                  fontWeight: "lighter"
-                }}
-              >
-                {message.data.time && message.data.time}
-                {/* <hr style={{ "border-color": "lightgreen" }} /> */}
-              </p>
-              <p
-                style={{
-                  "text-align": "center",
-                  margin: "8px 12px 4px 12px",
-                  fontSize: "14px",
-                  fontWeight: "normal"
-                }}
-              >
-                {message.data.content}
-              </p>
-              <p
-                style={{
-                  fontSize: "10px",
-                  "border-radius": "5px 5px 0 5px",
-                  border: "2px inset #33ff55",
-                  margin: "0px",
-                  padding: "0px 5px",
-                  float: "right",
-                  fontWeight: "lighter"
-                }}
-              >
-                {message.data.from.name}
-              </p>
-            </div>
+            <CustomerMessageWindow>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <CustomerName>{message.data.from.name}</CustomerName>
+                <CustomerTimeStamp>
+                  {message.data.time && message.data.time}
+                </CustomerTimeStamp>
+              </div>
+              <CustomerMessageContentContainer>
+                <CustomerMessageContent>
+                  {message.data.content}
+                </CustomerMessageContent>
+              </CustomerMessageContentContainer>
+            </CustomerMessageWindow>
           ) : (
-            <div
-              style={{
-                float: "left",
-                "min-width": "50%",
-                "max-width": "calc(100% - 30px)",
-                border: "1px groove #bbddff",
-                display: "inline-block",
-                padding: "3px 3px 5px 3px",
-                margin: "5px",
-                // "background-color": "lightblue",
-                "border-radius": "30px 40px 40px 0",
-                "box-shadow": "-3px 3px 6px #222222"
-              }}
-            >
-              <p
-                style={{
-                  margin: "0px",
-                  "text-align": "center",
-                  fontSize: "10px",
-                  fontWeight: "lighter"
-                }}
-              >
-                {message.data.time && message.data.time}
-                {/* <hr style={{ "border-color": "lightblue" }} /> */}
-              </p>
-              <p
-                style={{
-                  "text-align": "center",
-                  margin: "8px 12px 4px 12px",
-                  fontSize: "14px",
-                  fontWeight: "normal"
-                }}
-              >
-                {message.data.content}
-              </p>
-              <p
-                style={{
-                  fontSize: "10px",
-                  "border-radius": "5px 5px 5px 0",
-                  border: "2px inset #bbddff",
-                  margin: "0px",
-                  padding: "0px 5px",
-                  float: "left",
-                  fontWeight: "lighter"
-                }}
-              >
-                {message.data.from.name}
-              </p>
-            </div>
+            <RepMessageWindow>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <RepName>{message.data.from.name}</RepName>
+                <RepTimeStamp>
+                  {message.data.time && message.data.time}
+                </RepTimeStamp>
+              </div>
+              <RepMessageWindowContainer>
+                <RepMessageContent>{message.data.content}</RepMessageContent>
+              </RepMessageWindowContainer>
+            </RepMessageWindow>
           )}
         </Message>
       );
@@ -292,56 +231,25 @@ export default class Chat extends Component {
               <HeaderTitle>{this.props.headerTitle}</HeaderTitle>
               <MinimizeButton>&or;</MinimizeButton>
             </Header>
-
-            <div>
-              {this.talkoClient.name == "" && (
-                <div
-                  style={{
-                    opacity: "0.5",
-                    "z-index": 2,
-                    position: "absolute",
-                    height: "100%",
-                    width: "100%",
-                    "background-color": "rgba(0,0,0,0.5)",
-                    borderRadius: "5px 5px 5px 5px"
-                  }}
-                />
-              )}
-              <Profile>
-                <ProfileImage
-                  style={{ "border-radius": "10px" }}
-                  src={this.props.profileImage}
-                />
-                <div>
-                  <Name>{this.props.name}</Name>
-                  <Title>{this.props.title}</Title>
-                </div>
-                <Logo src={logo} />
-              </Profile>
-              <MessageWindow style={{ overflow: "auto" }}>
-                {dispMessages} <div ref={this.newMessage} />
-              </MessageWindow>
-              {this.talkoClient.name == "" ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center"
-                  }}
-                >
-                  <div
-                    style={{
-                      "z-index": "3",
-                      position: "absolute",
-                      top: "50%",
-                      border: "2px outset gray",
-                      boxShadow: "2px 2px 6px #333333"
-                    }}
-                  >
-                    <ContactForm setName={this.setName} />
+            {this.talkoClient.name == "" ? (
+              <ContactForm setName={this.setName} />
+            ) : (
+              <div>
+                <Profile>
+                  <ProfileImage
+                    style={{ "border-radius": "10px" }}
+                    src={this.props.profileImage}
+                  />
+                  <div>
+                    <Name>{this.props.name}</Name>
+                    <Title>{this.props.title}</Title>
                   </div>
-                  <InputWindow />
-                </div>
-              ) : (
+                  <Logo src={logo} />
+                </Profile>
+                <MessageWindow style={{ overflow: "auto" }}>
+                  {dispMessages} <div ref={this.newMessage} />
+                </MessageWindow>
+
                 <InputWindow>
                   <Input
                     onChange={this.handleInput}
@@ -354,11 +262,12 @@ export default class Chat extends Component {
                     onClick={this.sendMessage}
                   />
                 </InputWindow>
-              )}
-              <Footer>
-                <Credit>Powered by Talko.io</Credit>
-              </Footer>
-            </div>
+
+                <Footer>
+                  <Credit>Powered by Talko.io</Credit>
+                </Footer>
+              </div>
+            )}
           </ChatWindow>
         )}
       </ThemeProvider>

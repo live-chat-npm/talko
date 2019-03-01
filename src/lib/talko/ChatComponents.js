@@ -159,6 +159,7 @@ export const Logo = styled.img`
 export const MessageWindow = styled.div`
   height: 35vh;
   overflow: auto;
+  background-color: ${props => props.theme.messageWindow};
 `;
 
 export const Message = styled.div`
@@ -166,6 +167,91 @@ export const Message = styled.div`
   color: ${props => props.theme.messageColor};
   padding-left: 10px;
   padding-top: 10px;
+`;
+
+export const CustomerMessageWindow = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  margin-left: auto;
+`;
+
+export const CustomerName = styled.p`
+  font-size: 10px;
+  margin: 0px;
+  padding: 0px 5px;
+  font-weight: lighter;
+  color: ${props => props.theme.timeStampColor};
+`;
+
+export const CustomerTimeStamp = styled.p`
+  font-size: 10px;
+  font-weight: lighter;
+  margin: 0px;
+  color: ${props => props.theme.timeStampColor};
+`;
+
+export const CustomerMessageContentContainer = styled.div`
+  width: fit-content;
+  border: 1px solid lightgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+  border-radius: 6px;
+  background-color: #6ec3e4;
+  color: white;
+`;
+
+export const CustomerMessageContent = styled.p`
+  margin: 0;
+  font-size: 14px;
+  font-weight: normal;
+  display: inline-block;
+  word-break: break-word;
+  padding: 5px;
+`;
+
+export const RepMessageWindow = styled.div`
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  margin-right: auto;
+`;
+
+export const RepName = styled.p`
+  font-size: 10px;
+  margin: 0px;
+  padding: 0px 5px;
+  fontweight: lighter;
+  color: ${props => props.theme.timeStampColor};
+`;
+
+export const RepTimeStamp = styled.p`
+  margin: 0px;
+  font-size: 10px;
+  font-weight: lighter;
+  color: ${props => props.theme.timeStampColor};
+`;
+
+export const RepMessageWindowContainer = styled.div`
+  min-height: 30px;
+  border: 1px solid lightgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+  border-radius: 4px;
+  background-color: white;
+`;
+
+export const RepMessageContent = styled.p`
+  margin: 0;
+  font-size: 14px;
+  font-weight: normal;
+  display: inline-block;
+  word-break: break-word;
+  padding: 5px;
 `;
 
 export const MaximizeButton = styled.div`
@@ -206,21 +292,19 @@ export const Credit = styled.p`
 //************************************* */
 
 export const UserListWindow = styled.div`
-  box-shadow: 4px 4px 4px #222222;
   background: #2f363e;
   color: #575757;
   height: 100vh;
   width: 20vw;
   display: flex;
   flex-direction: column;
-
   overflow: auto;
 `;
 
 export const UserListHeader = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-top: auto;
   margin-right: auto;
@@ -266,8 +350,8 @@ export const Status = styled.div`
 
 export const AcceptButton = styled.button`
   border-radius: 5px;
-  width: 70px;
-  padding: 3px;
+  width: 60px;
+  padding: 4px;
   margin: 0 auto 0 auto;
   color: white;
   background-color: #252b32;
@@ -279,8 +363,10 @@ export const AcceptButton = styled.button`
 
 export const UserMessagesWindow = styled.div`
   width: 80vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: scroll;
 `;
 
 export const TabWindow = styled.div`
@@ -289,6 +375,9 @@ export const TabWindow = styled.div`
   background-color: #1e2228;
   display: flex;
   overflow-x: auto;
+  position: fixed;
+  z-index: 1;
+  top: 0;
 `;
 
 export const Tab = styled.div`
@@ -318,8 +407,10 @@ export const CloseTabButton = styled.div`
 `;
 
 export const ChatContentWindow = styled.div`
+  padding-top: 10px;
   box-shadow: 0px 0px 10px -5px lightgray;
   width: 80vw;
+  padding-bottom: 35px;
 `;
 
 export const ReplyInputWindow = styled.div`
@@ -348,9 +439,15 @@ export const RepSendButton = styled.button`
   }
 `;
 
-// Styled componets for contact form
+// Styled component for contact form
 export const Form = styled.form`
   background: ${props => props.theme.background};
   border-radius: 4px;
   color: ${props => props.theme.color};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: calc(100% - 200px);
+  width: 368px;
 `;

@@ -19,17 +19,39 @@ export default class ContactForm extends Component {
   render() {
     return (
       <Form onSubmit={e => this.sendName(e)}>
-        <input
-          autoFocus
-          required
-          type="text"
-          placeholder="Enter your name"
-          onChange={e => {
-            this.setState({ name: e.target.value });
+        <div>
+          <div
+            style={{
+              position: "relative",
+              top: "70px",
+              left: "200px",
+              color: "red"
+            }}
+          >
+            *
+          </div>
+          <p>Name</p>
+          <input
+            type="text"
+            placeholder="Enter your name"
+            onChange={e => {
+              this.setState({ name: e.target.value });
+            }}
+            style={{ width: "200px", height: "30px", paddingLeft: "5px" }}
+          />
+        </div>
+        <button
+          style={{
+            marginTop: "20px",
+            width: "210px",
+            height: "34px",
+            backgroundColor: "#82C1E0",
+            color: "white"
           }}
-        />
-        <br />
-        <input style={{ width: "100%" }} value="Go Talko!" type="submit" />
+          type="submit"
+        >
+          Start Chat
+        </button>
       </Form>
     );
   }

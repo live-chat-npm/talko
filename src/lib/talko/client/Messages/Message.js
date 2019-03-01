@@ -12,7 +12,12 @@ export default class Message {
   }
 
   newMessage(to, id, name, content) {
-    this.data.time = new Date().toUTCString();
+    this.data.time = new Date()
+      .toLocaleString()
+      .split("")
+      .splice(10, 12)
+      .join("");
+
     this.data.room = to;
     this.data.from.id = id;
     this.data.from.name = name;

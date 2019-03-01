@@ -19,7 +19,7 @@ export default class TalkoClientRep {
   constructor(upState) {
     this.session = new SessionHandler();
     this.upState = upState;
-    this.name = "(React) Rep";
+    this.name = "Talko Rep";
     this.myID = "";
     this.offerCustId = [];
     this.offerCustName = [];
@@ -47,10 +47,8 @@ export default class TalkoClientRep {
     });
 
     offerSocket.on("offer", message => {
-      console.log(message);
       this.offerCustId.push(message.data.from.id);
       this.offerCustName.push(message.data.from.name);
-      console.log("offer: " + this.offerCustName);
       newOffer(this.offerCustName);
     });
 
@@ -101,7 +99,6 @@ export default class TalkoClientRep {
       "this.offerCustId[0]"
     );
     offerSocket.emit("offer_accept", outOfferAcceptMsg);
-    console.log("offer accepted: " + this.offerCustId[0]);
 
     let obj = {};
     obj["name"] = this.offerCustName[0];
